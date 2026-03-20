@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const links = ["Features", "How It Works", "Safety", "Contact"];
 
   return (
