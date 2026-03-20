@@ -19,7 +19,6 @@ const Navbar = () => {
           <img src={healthrideLogo} alt="HealthRide" className="w-8 h-8" />
           HealthRide
         </a>
-        </a>
 
         <div className="hidden md:flex items-center gap-8">
           {links.map((l) => (
