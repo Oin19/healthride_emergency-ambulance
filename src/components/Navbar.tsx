@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Heart, UserCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import healthrideLogo from "@/assets/healthride-logo.png";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
