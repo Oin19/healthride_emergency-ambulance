@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Heart } from "lucide-react";
+import { Menu, X, Heart, UserCircle } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const links = ["Features", "How It Works", "Safety", "Contact"];
 
   return (
@@ -24,6 +28,9 @@ const Navbar = () => {
             </a>
           ))}
           <Button variant="emergency" size="sm">Request Ambulance</Button>
+          <Button variant="hero" size="sm" onClick={() => navigate(user ? "/profile" : "/auth")}>
+            <UserCircle className="w-4 h-4" /> {user ? "Profile" : "Sign In"}
+          </Button>
         </div>
 
         <button className="md:hidden text-foreground" onClick={() => setOpen(!open)}>
@@ -46,6 +53,9 @@ const Navbar = () => {
                 </a>
               ))}
               <Button variant="emergency" size="sm">Request Ambulance</Button>
+              <Button variant="hero" size="sm" onClick={() => { setOpen(false); navigate(user ? "/profile" : "/auth"); }}>
+                <UserCircle className="w-4 h-4" /> {user ? "Profile" : "Sign In"}
+              </Button>
             </div>
           </motion.div>
         )}
