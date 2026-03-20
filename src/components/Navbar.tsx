@@ -53,6 +53,9 @@ const Navbar = () => {
                 </a>
               ))}
               <Button variant="emergency" size="sm">Request Ambulance</Button>
+              <Button variant="hero" size="sm" onClick={() => { setOpen(false); navigate(user ? "/profile" : "/auth"); }}>
+                <UserCircle className="w-4 h-4" /> {user ? "Profile" : "Sign In"}
+              </Button>
             </div>
           </motion.div>
         )}
