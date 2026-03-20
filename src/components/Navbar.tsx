@@ -16,10 +16,9 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
         <a href="#" className="flex items-center gap-2 font-display text-xl font-bold text-foreground">
-          <div className="w-8 h-8 rounded-lg bg-gradient-emergency flex items-center justify-center">
-            <Heart className="w-4 h-4 text-emergency-foreground" />
-          </div>
+          <img src={healthrideLogo} alt="HealthRide" className="w-8 h-8" />
           HealthRide
+        </a>
         </a>
 
         <div className="hidden md:flex items-center gap-8">
