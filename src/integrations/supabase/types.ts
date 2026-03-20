@@ -14,13 +14,162 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      emergency_contacts: {
+        Row: {
+          contact_name: string
+          created_at: string
+          id: string
+          phone: string
+          profile_id: string
+          relationship: string | null
+          updated_at: string
+        }
+        Insert: {
+          contact_name: string
+          created_at?: string
+          id?: string
+          phone: string
+          profile_id: string
+          relationship?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contact_name?: string
+          created_at?: string
+          id?: string
+          phone?: string
+          profile_id?: string
+          relationship?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_contacts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurance_details: {
+        Row: {
+          created_at: string
+          group_number: string | null
+          id: string
+          policy_number: string | null
+          profile_id: string
+          provider: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          group_number?: string | null
+          id?: string
+          policy_number?: string | null
+          profile_id: string
+          provider?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          group_number?: string | null
+          id?: string
+          policy_number?: string | null
+          profile_id?: string
+          provider?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_details_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medical_history: {
+        Row: {
+          allergies: string | null
+          conditions: string | null
+          created_at: string
+          id: string
+          medications: string | null
+          profile_id: string
+          updated_at: string
+        }
+        Insert: {
+          allergies?: string | null
+          conditions?: string | null
+          created_at?: string
+          id?: string
+          medications?: string | null
+          profile_id: string
+          updated_at?: string
+        }
+        Update: {
+          allergies?: string | null
+          conditions?: string | null
+          created_at?: string
+          id?: string
+          medications?: string | null
+          profile_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medical_history_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          blood_type: string | null
+          created_at: string
+          date_of_birth: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          blood_type?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          blood_type?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_own_profile: { Args: { _profile_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
