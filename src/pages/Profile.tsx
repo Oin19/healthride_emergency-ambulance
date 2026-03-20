@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import healthrideLogo from "@/assets/healthride-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -186,9 +187,7 @@ const Profile = () => {
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <a href="/" className="flex items-center gap-2 font-display text-xl font-bold text-foreground">
-              <div className="w-8 h-8 rounded-lg bg-gradient-emergency flex items-center justify-center">
-                <Heart className="w-4 h-4 text-emergency-foreground" />
-              </div>
+              <img src={healthrideLogo} alt="HealthRide" className="w-8 h-8" />
               HealthRide
             </a>
           </div>

@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import healthrideLogo from "@/assets/healthride-logo.png";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
@@ -53,9 +54,7 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <Card className="w-full max-w-md shadow-elevated">
         <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 rounded-xl bg-gradient-emergency flex items-center justify-center mb-4">
-            <Heart className="w-6 h-6 text-emergency-foreground" />
-          </div>
+          <img src={healthrideLogo} alt="HealthRide" className="mx-auto w-16 h-16 mb-4" />
           <CardTitle className="font-display text-2xl">Welcome to HealthRide</CardTitle>
           <CardDescription>Sign in to manage your health profile</CardDescription>
         </CardHeader>
