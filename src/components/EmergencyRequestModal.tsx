@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import LiveTrackingMap from "@/components/LiveTrackingMap";
 
 type Step = "location" | "details" | "dispatching" | "tracking";
 
@@ -325,43 +326,10 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                     </div>
                   </div>
 
-                  {/* Live Map Placeholder */}
-                  <div className="bg-card border border-border rounded-xl overflow-hidden">
-                    <div className="h-48 bg-secondary/50 relative flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="relative inline-block mb-3">
-                          <div className="w-4 h-4 rounded-full bg-accent animate-pulse" />
-                          <div className="absolute inset-0 rounded-full bg-accent animate-pulse-ring" />
-                        </div>
-                        <p className="text-sm text-muted-foreground">Live tracking active</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          <MapPin className="w-3 h-3 inline mr-1" />{locationText}
-                        </p>
-                      </div>
-
-                      {/* Animated route line */}
-                      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 200">
-                        <motion.path
-                          d="M50,150 Q120,80 200,100 Q280,120 350,50"
-                          fill="none"
-                          stroke="hsl(var(--accent))"
-                          strokeWidth="2.5"
-                          strokeDasharray="8 4"
-                          initial={{ pathLength: 0 }}
-                          animate={{ pathLength: 1 }}
-                          transition={{ duration: 2, ease: "easeInOut" }}
-                        />
-                        <motion.circle
-                          r="6"
-                          fill="hsl(var(--accent))"
-                          initial={{ cx: 50, cy: 150 }}
-                          animate={{ cx: 350, cy: 50 }}
-                          transition={{ duration: 3, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
-                        />
-                        <circle cx="350" cy="50" r="5" fill="hsl(var(--success))" />
-                      </svg>
-                    </div>
-                  </div>
+                  {/* Live Map */}
+                  {coords && (
+                    <LiveTrackingMap patientCoords={coords} />
+                  )}
 
                   {/* Status & Safety */}
                   <div className="flex gap-3">
