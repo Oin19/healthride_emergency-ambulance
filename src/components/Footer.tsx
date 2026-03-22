@@ -1,22 +1,49 @@
-import { Heart } from "lucide-react";
+import { Heart, Phone, Mail, MapPin } from "lucide-react";
 
 const Footer = () => (
-  <footer className="py-12 bg-background border-t border-border">
+  <footer id="contact" className="py-12 bg-background border-t border-border">
     <div className="container mx-auto px-4">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-        <a href="#" className="flex items-center gap-2 font-display text-lg font-bold text-foreground">
-          <div className="w-7 h-7 rounded-lg bg-gradient-emergency flex items-center justify-center">
-            <Heart className="w-3.5 h-3.5 text-emergency-foreground" />
-          </div>
-          HealthRide
-        </a>
-        <div className="flex gap-6 text-sm text-muted-foreground">
-          <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-          <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-          <a href="#" className="hover:text-foreground transition-colors">Careers</a>
-          <a href="#" className="hover:text-foreground transition-colors">Support</a>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <a href="#" className="flex items-center gap-2 font-display text-lg font-bold text-foreground mb-3">
+            <div className="w-7 h-7 rounded-lg bg-gradient-emergency flex items-center justify-center">
+              <Heart className="w-3.5 h-3.5 text-emergency-foreground" />
+            </div>
+            HealthRide
+          </a>
+          <p className="text-sm text-muted-foreground">AI-powered emergency ambulance dispatch. Every second counts.</p>
         </div>
+
+        <div>
+          <h3 className="font-display font-semibold text-foreground mb-3">Quick Links</h3>
+          <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+            <a href="#features" className="hover:text-foreground transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-foreground transition-colors">How It Works</a>
+            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
+            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-display font-semibold text-foreground mb-3">Contact & Support</h3>
+          <div className="space-y-2.5 text-sm text-muted-foreground">
+            <p className="font-medium text-foreground">Oindrila Banerjee — CEO</p>
+            <a href="tel:9330865494" className="flex items-center gap-2 hover:text-foreground transition-colors">
+              <Phone className="w-4 h-4 text-accent" /> +91 9330865494
+            </a>
+            <a href="mailto:support@healthride.in" className="flex items-center gap-2 hover:text-foreground transition-colors">
+              <Mail className="w-4 h-4 text-accent" /> support@healthride.in
+            </a>
+            <p className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-accent" /> India
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-border pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <p className="text-xs text-muted-foreground">© 2026 HealthRide. All rights reserved.</p>
+        <a href="tel:102" className="text-xs text-accent hover:text-accent/80 transition-colors font-medium">National Ambulance Helpline: 102</a>
       </div>
     </div>
   </footer>

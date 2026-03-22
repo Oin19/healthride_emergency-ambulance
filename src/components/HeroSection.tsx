@@ -9,15 +9,17 @@ const stats = [
   { icon: Shield, label: "Lives Saved", value: "50K+" },
 ];
 
-const HeroSection = () => (
+interface HeroSectionProps {
+  onRequestAmbulance?: () => void;
+}
+
+const HeroSection = ({ onRequestAmbulance }: HeroSectionProps) => (
   <section className="relative min-h-screen flex items-center overflow-hidden">
-    {/* Background */}
     <div className="absolute inset-0">
       <img src={heroBg} alt="" className="w-full h-full object-cover" />
       <div className="absolute inset-0 bg-gradient-hero opacity-85" />
     </div>
 
-    {/* Pulse ring */}
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
       <div className="w-64 h-64 rounded-full border-2 border-emergency/30 animate-pulse-ring" />
       <div className="w-64 h-64 rounded-full border-2 border-emergency/20 animate-pulse-ring" style={{ animationDelay: "0.5s" }} />
@@ -41,10 +43,15 @@ const HeroSection = () => (
           </p>
 
           <div className="flex flex-wrap gap-4 mb-16">
-            <Button variant="emergency" size="lg" className="text-base px-8">
+            <Button variant="emergency" size="lg" className="text-base px-8" onClick={onRequestAmbulance}>
               Request Ambulance Now
             </Button>
-            <Button variant="hero" size="lg" className="text-base px-8 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20">
+            <Button
+              variant="hero"
+              size="lg"
+              className="text-base px-8 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20"
+              onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+            >
               See How It Works
             </Button>
           </div>
