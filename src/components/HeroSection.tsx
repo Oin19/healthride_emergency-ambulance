@@ -5,8 +5,8 @@ import heroBg from "@/assets/hero-bg.jpg";
 
 const stats = [
   { icon: Clock, label: "Avg Response", value: "< 8 min" },
-  { icon: MapPin, label: "Cities Covered", value: "120+" },
-  { icon: Shield, label: "Lives Saved", value: "50K+" },
+  { icon: MapPin, label: "GPS Tracked", value: "Real-Time" },
+  { icon: Shield, label: "Verified Fleet", value: "100%" },
 ];
 
 interface HeroSectionProps {

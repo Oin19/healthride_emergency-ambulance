@@ -31,11 +31,11 @@ const Footer = () => (
             <a href="tel:9330865494" className="flex items-center gap-2 hover:text-foreground transition-colors">
               <Phone className="w-4 h-4 text-accent" /> +91 9330865494
             </a>
-            <a href="mailto:support@healthride.in" className="flex items-center gap-2 hover:text-foreground transition-colors">
-              <Mail className="w-4 h-4 text-accent" /> support@healthride.in
+            <a href="mailto:banerjeeoindrila40@gmail.com" className="flex items-center gap-2 hover:text-foreground transition-colors">
+              <Mail className="w-4 h-4 text-accent" /> banerjeeoindrila40@gmail.com
             </a>
             <p className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-accent" /> India
+              <MapPin className="w-4 h-4 text-accent" /> Kolkata, West Bengal, India
             </p>
           </div>
         </div>
