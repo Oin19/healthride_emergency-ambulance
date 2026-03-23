@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, UserCircle } from "lucide-react";
+import { Menu, X, UserCircle, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import healthrideLogo from "@/assets/healthride-logo.png";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,16 +12,25 @@ const Navbar = () => {
   const [emergencyOpen, setEmergencyOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   const links = ["Features", "How It Works", "Safety", "Contact"];
 
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
         <div className="container mx-auto flex items-center justify-between h-16 px-4">
-          <a href="#" className="flex items-center gap-2 font-display text-xl font-bold text-foreground">
-            <img src={healthrideLogo} alt="HealthRide" className="w-8 h-8" />
-            HealthRide
-          </a>
+          <div className="flex items-center gap-2">
+            {!isHome && (
+              <button onClick={() => navigate(-1)} className="mr-1 p-1.5 rounded-lg hover:bg-muted transition-colors text-foreground">
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+            )}
+            <a onClick={() => navigate("/")} className="flex items-center gap-2 font-display text-xl font-bold text-foreground cursor-pointer">
+              <img src={healthrideLogo} alt="HealthRide" className="w-8 h-8" />
+              HealthRide
+            </a>
+          </div>
 
           <div className="hidden md:flex items-center gap-8">
             {links.map((l) => (
