@@ -20,10 +20,17 @@ const Navbar = () => {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
         <div className="container mx-auto flex items-center justify-between h-16 px-4">
-          <a href="#" className="flex items-center gap-2 font-display text-xl font-bold text-foreground">
-            <img src={healthrideLogo} alt="HealthRide" className="w-8 h-8" />
-            HealthRide
-          </a>
+          <div className="flex items-center gap-2">
+            {!isHome && (
+              <button onClick={() => navigate(-1)} className="mr-1 p-1.5 rounded-lg hover:bg-muted transition-colors text-foreground">
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+            )}
+            <a onClick={() => navigate("/")} className="flex items-center gap-2 font-display text-xl font-bold text-foreground cursor-pointer">
+              <img src={healthrideLogo} alt="HealthRide" className="w-8 h-8" />
+              HealthRide
+            </a>
+          </div>
 
           <div className="hidden md:flex items-center gap-8">
             {links.map((l) => (
