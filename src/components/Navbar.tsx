@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, UserCircle } from "lucide-react";
+import { Menu, X, UserCircle, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import healthrideLogo from "@/assets/healthride-logo.png";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,6 +12,8 @@ const Navbar = () => {
   const [emergencyOpen, setEmergencyOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   const links = ["Features", "How It Works", "Safety", "Contact"];
 
   return (
