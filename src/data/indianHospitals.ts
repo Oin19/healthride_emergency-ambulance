@@ -50,11 +50,14 @@ export const indianHospitals: Hospital[] = [
   { name: "SSKM Hospital", city: "Kolkata", area: "Bhowanipore", lat: 22.5375, lng: 88.3444, rating: 4.5, beds: 44, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Swasthya Sathi"], verified: true, level: "Level I Trauma", phone: "+91-33-22041101" },
   { name: "Apollo Gleneagles Hospital", city: "Kolkata", area: "Canal Circular Road", lat: 22.5626, lng: 88.3971, rating: 4.7, beds: 22, specialties: ["Cardiology", "Oncology", "Neurosciences", "Orthopedics"], insurance: ["Star Health", "HDFC Ergo", "ICICI Lombard", "Bajaj Allianz"], verified: true, level: "Multi Speciality", phone: "+91-33-23203040" },
   { name: "Fortis Hospital Anandapur", city: "Kolkata", area: "Anandapur", lat: 22.5130, lng: 88.4050, rating: 4.6, beds: 18, specialties: ["Cardiology", "Renal Sciences", "Orthopedics", "Neurosciences"], insurance: ["Star Health", "Bajaj Allianz", "ICICI Lombard", "Max Bupa"], verified: true, level: "Multi Speciality", phone: "+91-33-66284444" },
+  { name: "AMRI Hospital Salt Lake", city: "Kolkata", area: "Salt Lake", lat: 22.5800, lng: 88.4100, rating: 4.5, beds: 20, specialties: ["Cardiology", "Orthopedics", "Gastroenterology", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "Swasthya Sathi", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-33-66800000" },
+  { name: "Woodlands Multispeciality Hospital", city: "Kolkata", area: "Alipore", lat: 22.5330, lng: 88.3370, rating: 4.4, beds: 16, specialties: ["Emergency", "Internal Medicine", "Cardiology", "Nephrology"], insurance: ["Star Health", "ICICI Lombard", "Swasthya Sathi"], verified: true, level: "Multi Speciality", phone: "+91-33-24567075" },
 
   // Pune
   { name: "Ruby Hall Clinic", city: "Pune", area: "Sassoon Road", lat: 18.5285, lng: 73.8806, rating: 4.7, beds: 20, specialties: ["Cardiology", "Oncology", "Neurology", "Orthopedics"], insurance: ["Star Health", "HDFC Ergo", "New India Assurance", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-20-66455100" },
   { name: "Sahyadri Hospital", city: "Pune", area: "Deccan", lat: 18.5140, lng: 73.8414, rating: 4.6, beds: 16, specialties: ["Cardiology", "Neurosurgery", "Orthopedics", "Trauma"], insurance: ["Star Health", "Bajaj Allianz", "HDFC Ergo", "United India"], verified: true, level: "Multi Speciality", phone: "+91-20-67210100" },
   { name: "Jehangir Hospital", city: "Pune", area: "Sassoon Road", lat: 18.5300, lng: 73.8790, rating: 4.5, beds: 14, specialties: ["Emergency", "Internal Medicine", "Cardiology", "Gastroenterology"], insurance: ["Star Health", "New India Assurance", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-20-66810000" },
+  { name: "Deenanath Mangeshkar Hospital", city: "Pune", area: "Erandwane", lat: 18.5060, lng: 73.8320, rating: 4.6, beds: 18, specialties: ["Cardiology", "Oncology", "Nephrology", "Orthopedics"], insurance: ["Star Health", "HDFC Ergo", "Bajaj Allianz", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-20-66023000" },
 
   // Jaipur
   { name: "SMS Hospital", city: "Jaipur", area: "JLN Marg", lat: 26.8932, lng: 75.8069, rating: 4.4, beds: 48, specialties: ["Trauma", "Emergency", "General Surgery", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat", "ECHS", "Bhamashah"], verified: true, level: "Level I Trauma", phone: "+91-141-2518900" },
@@ -69,6 +72,48 @@ export const indianHospitals: Hospital[] = [
   // Lucknow
   { name: "KGMU Lucknow", city: "Lucknow", area: "Chowk", lat: 26.8570, lng: 80.9360, rating: 4.6, beds: 50, specialties: ["Trauma", "Cardiology", "Nephrology", "Neurology"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-522-2257540" },
   { name: "Medanta Hospital Lucknow", city: "Lucknow", area: "Shaheed Path", lat: 26.8020, lng: 81.0200, rating: 4.8, beds: 24, specialties: ["Cardiology", "Oncology", "Neurosciences", "Transplant"], insurance: ["Star Health", "HDFC Ergo", "ICICI Lombard", "Bajaj Allianz"], verified: true, level: "Multi Speciality", phone: "+91-522-4505050" },
+
+  // Chandigarh
+  { name: "PGIMER Chandigarh", city: "Chandigarh", area: "Sector 12", lat: 30.7649, lng: 76.7756, rating: 4.9, beds: 55, specialties: ["Trauma", "Cardiology", "Neurology", "Nephrology", "Oncology"], insurance: ["CGHS", "ECHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-172-2746018" },
+  { name: "Fortis Hospital Mohali", city: "Chandigarh", area: "Mohali", lat: 30.7130, lng: 76.6960, rating: 4.7, beds: 22, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "Bajaj Allianz", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-172-4692222" },
+  { name: "Max Super Speciality Hospital Mohali", city: "Chandigarh", area: "Mohali", lat: 30.7050, lng: 76.7210, rating: 4.6, beds: 18, specialties: ["Cardiology", "Oncology", "Gastroenterology", "Orthopedics"], insurance: ["Star Health", "HDFC Ergo", "Max Bupa", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-172-6652000" },
+
+  // Bhopal
+  { name: "AIIMS Bhopal", city: "Bhopal", area: "Saket Nagar", lat: 23.2063, lng: 77.4480, rating: 4.8, beds: 40, specialties: ["Trauma", "Cardiology", "Neurology", "Oncology"], insurance: ["CGHS", "ECHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-755-2672317" },
+  { name: "Bansal Hospital", city: "Bhopal", area: "Shahpura", lat: 23.1940, lng: 77.4370, rating: 4.5, beds: 16, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Bajaj Allianz", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-755-4086000" },
+  { name: "Chirayu Medical College", city: "Bhopal", area: "Bhainsakhedi", lat: 23.1750, lng: 77.4800, rating: 4.4, beds: 20, specialties: ["Emergency", "Internal Medicine", "Pediatrics", "Orthopedics"], insurance: ["Ayushman Bharat", "Star Health", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-755-4040404" },
+
+  // Kochi
+  { name: "Amrita Hospital Kochi", city: "Kochi", area: "Edappally", lat: 10.0322, lng: 76.2890, rating: 4.8, beds: 30, specialties: ["Cardiology", "Oncology", "Neurosciences", "Transplant"], insurance: ["Star Health", "HDFC Ergo", "ICICI Lombard", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-484-2801234" },
+  { name: "Aster Medcity", city: "Kochi", area: "Cheranalloor", lat: 10.0070, lng: 76.3110, rating: 4.7, beds: 24, specialties: ["Cardiology", "Oncology", "Orthopedics", "Gastroenterology"], insurance: ["Star Health", "Bajaj Allianz", "HDFC Ergo", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-484-6699999" },
+  { name: "Medical Trust Hospital", city: "Kochi", area: "MG Road", lat: 9.9710, lng: 76.2850, rating: 4.5, beds: 16, specialties: ["Emergency", "Internal Medicine", "Cardiology", "Nephrology"], insurance: ["Star Health", "New India Assurance", "United India"], verified: true, level: "Multi Speciality", phone: "+91-484-2358001" },
+
+  // Guwahati
+  { name: "GMCH Guwahati", city: "Guwahati", area: "Bhangagarh", lat: 26.1700, lng: 91.7660, rating: 4.4, beds: 42, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-361-2529457" },
+  { name: "Nemcare Hospital", city: "Guwahati", area: "Bhangagarh", lat: 26.1680, lng: 91.7700, rating: 4.5, beds: 16, specialties: ["Cardiology", "Neurosciences", "Orthopedics", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-361-2343000" },
+  { name: "Excelcare Hospital", city: "Guwahati", area: "Six Mile", lat: 26.1520, lng: 91.8020, rating: 4.3, beds: 14, specialties: ["Emergency", "Internal Medicine", "Cardiology", "Gastroenterology"], insurance: ["Star Health", "Bajaj Allianz", "Ayushman Bharat"], verified: true, level: "Multi Speciality", phone: "+91-361-2301300" },
+
+  // Thiruvananthapuram
+  { name: "Sree Chitra Tirunal Institute", city: "Thiruvananthapuram", area: "Medical College", lat: 8.5140, lng: 76.9460, rating: 4.9, beds: 28, specialties: ["Cardiology", "Cardiac Surgery", "Neurology", "Neurosurgery"], insurance: ["CGHS", "ECHS", "Ayushman Bharat", "KASP"], verified: true, level: "Super Speciality", phone: "+91-471-2524282" },
+  { name: "KIMS Hospital", city: "Thiruvananthapuram", area: "Anayara", lat: 8.4780, lng: 76.9560, rating: 4.6, beds: 20, specialties: ["Cardiology", "Oncology", "Orthopedics", "Neurosciences"], insurance: ["Star Health", "HDFC Ergo", "ICICI Lombard", "KASP"], verified: true, level: "Multi Speciality", phone: "+91-471-3041000" },
+
+  // Patna
+  { name: "AIIMS Patna", city: "Patna", area: "Phulwarisharif", lat: 25.5770, lng: 85.0700, rating: 4.7, beds: 35, specialties: ["Trauma", "Cardiology", "Neurology", "Oncology"], insurance: ["CGHS", "ECHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-612-2451070" },
+  { name: "Paras HMRI Hospital", city: "Patna", area: "Raja Bazar", lat: 25.6180, lng: 85.1340, rating: 4.5, beds: 18, specialties: ["Cardiology", "Neurosciences", "Orthopedics", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Bajaj Allianz", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-612-7107107" },
+  { name: "Indira Gandhi Institute of Medical Sciences", city: "Patna", area: "Sheikhpura", lat: 25.6100, lng: 85.1700, rating: 4.4, beds: 30, specialties: ["Trauma", "Cardiology", "Nephrology", "General Surgery"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Multi Speciality", phone: "+91-612-2297631" },
+
+  // Indore
+  { name: "Choithram Hospital", city: "Indore", area: "Manik Bagh Road", lat: 22.6950, lng: 75.8540, rating: 4.5, beds: 20, specialties: ["Cardiology", "Nephrology", "Orthopedics", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Ayushman Bharat", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-731-2362491" },
+  { name: "Bombay Hospital Indore", city: "Indore", area: "Ring Road", lat: 22.7240, lng: 75.8680, rating: 4.6, beds: 22, specialties: ["Cardiology", "Oncology", "Neurosciences", "Transplant"], insurance: ["Star Health", "Bajaj Allianz", "ICICI Lombard", "HDFC Ergo"], verified: true, level: "Multi Speciality", phone: "+91-731-2558866" },
+
+  // Coimbatore
+  { name: "PSG Hospitals", city: "Coimbatore", area: "Peelamedu", lat: 11.0240, lng: 77.0250, rating: 4.7, beds: 24, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "New India Assurance", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-422-2570170" },
+  { name: "GKNM Hospital", city: "Coimbatore", area: "Pappanaickenpalayam", lat: 11.0170, lng: 76.9600, rating: 4.6, beds: 18, specialties: ["Cardiology", "Nephrology", "Gastroenterology", "Oncology"], insurance: ["Star Health", "Bajaj Allianz", "Ayushman Bharat", "United India"], verified: true, level: "Multi Speciality", phone: "+91-422-2215555" },
+  { name: "Kovai Medical Center", city: "Coimbatore", area: "Avinashi Road", lat: 11.0290, lng: 77.0040, rating: 4.5, beds: 20, specialties: ["Cardiology", "Orthopedics", "Neurology", "Transplant"], insurance: ["Star Health", "HDFC Ergo", "ICICI Lombard", "Max Bupa"], verified: true, level: "Multi Speciality", phone: "+91-422-4323800" },
+
+  // Visakhapatnam
+  { name: "King George Hospital", city: "Visakhapatnam", area: "Maharanipeta", lat: 17.7150, lng: 83.3060, rating: 4.3, beds: 40, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Aarogyasri"], verified: true, level: "Level I Trauma", phone: "+91-891-2564891" },
+  { name: "CARE Hospitals Vizag", city: "Visakhapatnam", area: "Ramnagar", lat: 17.7270, lng: 83.3190, rating: 4.6, beds: 18, specialties: ["Cardiology", "Neurosciences", "Orthopedics", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "Aarogyasri", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-891-3041444" },
 ];
 
 export const cities = [
@@ -82,6 +127,15 @@ export const cities = [
   { name: "Jaipur", lat: 26.9124, lng: 75.7873 },
   { name: "Ahmedabad", lat: 23.0225, lng: 72.5714 },
   { name: "Lucknow", lat: 26.8467, lng: 80.9462 },
+  { name: "Chandigarh", lat: 30.7333, lng: 76.7794 },
+  { name: "Bhopal", lat: 23.2599, lng: 77.4126 },
+  { name: "Kochi", lat: 9.9312, lng: 76.2673 },
+  { name: "Guwahati", lat: 26.1445, lng: 91.7362 },
+  { name: "Thiruvananthapuram", lat: 8.5241, lng: 76.9366 },
+  { name: "Patna", lat: 25.6093, lng: 85.1376 },
+  { name: "Indore", lat: 22.7196, lng: 75.8577 },
+  { name: "Coimbatore", lat: 11.0168, lng: 76.9558 },
+  { name: "Visakhapatnam", lat: 17.6868, lng: 83.2185 },
 ];
 
 export function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
