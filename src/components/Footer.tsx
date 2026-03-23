@@ -19,8 +19,8 @@ const Footer = () => (
           <div className="flex flex-col gap-2 text-sm text-muted-foreground">
             <a href="#features" className="hover:text-foreground transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-foreground transition-colors">How It Works</a>
-            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+            <a href="/privacy" className="hover:text-foreground transition-colors">Privacy</a>
+            <a href="/terms" className="hover:text-foreground transition-colors">Terms</a>
           </div>
         </div>
 
@@ -31,11 +31,11 @@ const Footer = () => (
             <a href="tel:9330865494" className="flex items-center gap-2 hover:text-foreground transition-colors">
               <Phone className="w-4 h-4 text-accent" /> +91 9330865494
             </a>
-            <a href="mailto:support@healthride.in" className="flex items-center gap-2 hover:text-foreground transition-colors">
-              <Mail className="w-4 h-4 text-accent" /> support@healthride.in
+            <a href="mailto:banerjeeoindrila40@gmail.com" className="flex items-center gap-2 hover:text-foreground transition-colors">
+              <Mail className="w-4 h-4 text-accent" /> banerjeeoindrila40@gmail.com
             </a>
             <p className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-accent" /> India
+              <MapPin className="w-4 h-4 text-accent" /> Kolkata, West Bengal, India
             </p>
           </div>
         </div>
