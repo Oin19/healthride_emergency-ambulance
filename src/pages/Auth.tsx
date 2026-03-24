@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -6,16 +6,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowLeft, User, Truck, Building2 } from "lucide-react";
 import healthrideLogo from "@/assets/healthride-logo.png";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
+
+type UserRole = "patient" | "driver" | "hospital";
+
+const roleConfig = {
+  patient: { label: "Patient", icon: User, description: "Book ambulances & manage health records" },
+  driver: { label: "Ambulance Driver", icon: Truck, description: "Accept rides & manage dispatch" },
+  hospital: { label: "Hospital", icon: Building2, description: "Manage admissions & coordinate care" },
+};
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<UserRole>("patient");
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -30,7 +38,10 @@ const Auth = () => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: window.location.origin },
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: { role: selectedRole },
+      },
     });
     setLoading(false);
     if (error) {
@@ -51,7 +62,15 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 relative">
+      <button
+        onClick={() => navigate("/")}
+        className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span className="text-sm font-medium">Back to Home</span>
+      </button>
+
       <Card className="w-full max-w-md shadow-elevated">
         <CardHeader className="text-center">
           <img src={healthrideLogo} alt="HealthRide" className="mx-auto w-16 h-16 mb-4" />
@@ -64,6 +83,7 @@ const Auth = () => {
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
+
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4 mt-4">
                 <div className="space-y-2">
@@ -79,8 +99,32 @@ const Auth = () => {
                 </Button>
               </form>
             </TabsContent>
+
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4 mt-4">
+                {/* Role Selection */}
+                <div className="space-y-2">
+                  <Label>I am a</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(Object.entries(roleConfig) as [UserRole, typeof roleConfig.patient][]).map(([key, { label, icon: Icon }]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setSelectedRole(key)}
+                        className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border-2 transition-all text-center ${
+                          selectedRole === key
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border bg-card text-muted-foreground hover:border-primary/40"
+                        }`}
+                      >
+                        <Icon className="w-5 h-5" />
+                        <span className="text-xs font-medium leading-tight">{label}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground text-center">{roleConfig[selectedRole].description}</p>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="signup-email">Email</Label>
                   <Input id="signup-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" />
