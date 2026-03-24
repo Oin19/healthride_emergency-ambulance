@@ -96,11 +96,20 @@ const Auth = () => {
         setLoading(false);
         return;
       }
-      toast({
-        title: "Registration Submitted",
-        description: "Your driver registration is under review. We'll contact you on " + driverMobile + ".",
+      const { error: dbError } = await supabase.from("driver_registrations").insert({
+        mobile: driverMobile,
+        license_number: licenseNumber,
+        vehicle_number: carNumber,
+        ownership_type: ownershipType,
+        hospital_name: ownershipType === "hospital" ? hospitalName : null,
+        ambulance_type: ambulanceType,
       });
       setLoading(false);
+      if (dbError) {
+        toast({ title: "Error", description: dbError.message, variant: "destructive" });
+      } else {
+        toast({ title: "Registration Submitted", description: "Your driver registration is under review. We'll contact you on " + driverMobile + "." });
+      }
       return;
     }
 
