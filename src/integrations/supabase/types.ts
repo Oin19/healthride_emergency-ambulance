@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      driver_registrations: {
+        Row: {
+          admin_notes: string | null
+          ambulance_type: string
+          created_at: string
+          hospital_name: string | null
+          id: string
+          license_number: string
+          mobile: string
+          ownership_type: string
+          status: string
+          updated_at: string
+          vehicle_number: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          ambulance_type: string
+          created_at?: string
+          hospital_name?: string | null
+          id?: string
+          license_number: string
+          mobile: string
+          ownership_type?: string
+          status?: string
+          updated_at?: string
+          vehicle_number: string
+        }
+        Update: {
+          admin_notes?: string | null
+          ambulance_type?: string
+          created_at?: string
+          hospital_name?: string | null
+          id?: string
+          license_number?: string
+          mobile?: string
+          ownership_type?: string
+          status?: string
+          updated_at?: string
+          vehicle_number?: string
+        }
+        Relationships: []
+      }
       emergency_contacts: {
         Row: {
           contact_name: string
@@ -51,6 +93,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      hospital_registrations: {
+        Row: {
+          address: string
+          admin_notes: string | null
+          business_contact: string
+          created_at: string
+          facilities: string | null
+          hospital_name: string
+          id: string
+          id_number: string
+          id_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          admin_notes?: string | null
+          business_contact: string
+          created_at?: string
+          facilities?: string | null
+          hospital_name: string
+          id?: string
+          id_number: string
+          id_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          admin_notes?: string | null
+          business_contact?: string
+          created_at?: string
+          facilities?: string | null
+          hospital_name?: string
+          id?: string
+          id_number?: string
+          id_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       insurance_details: {
         Row: {
@@ -164,15 +248,43 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_own_profile: { Args: { _profile_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -299,6 +411,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
