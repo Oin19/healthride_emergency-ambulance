@@ -228,7 +228,7 @@ const HospitalFinderSection = () => {
             <MapPin className="w-10 h-10 mx-auto mb-4 text-muted-foreground/40" />
             <p className="text-muted-foreground">Enter your city above to find nearby hospitals</p>
             <div className="flex flex-wrap justify-center gap-2 mt-4">
-              {cities.slice(0, 6).map((c) => (
+              {cities.map((c) => (
                 <button key={c.name} onClick={() => handleCitySelect(c)} className="text-xs px-3 py-1.5 rounded-full border border-border bg-card text-muted-foreground hover:border-foreground/30 transition-colors">
                   {c.name}
                 </button>
