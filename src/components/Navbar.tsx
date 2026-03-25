@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, UserCircle, ArrowLeft, Shield } from "lucide-react";
+import { Menu, X, UserCircle, ArrowLeft, Shield, Truck } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import healthrideLogo from "@/assets/healthride-logo.png";
@@ -48,6 +48,9 @@ const Navbar = () => {
               </a>
             ))}
             <Button variant="emergency" size="sm" onClick={() => setEmergencyOpen(true)}>Request Ambulance</Button>
+            <Button variant="outline" size="sm" onClick={() => navigate("/driver-auth")}>
+              <Truck className="w-4 h-4" /> Driver Portal
+            </Button>
             {isAdmin && (
               <Button variant="outline" size="sm" onClick={() => navigate("/admin")}>
                 <Shield className="w-4 h-4" /> Admin
@@ -78,6 +81,9 @@ const Navbar = () => {
                   </a>
                 ))}
                 <Button variant="emergency" size="sm" onClick={() => { setOpen(false); setEmergencyOpen(true); }}>Request Ambulance</Button>
+                <Button variant="outline" size="sm" onClick={() => { setOpen(false); navigate("/driver-auth"); }}>
+                  <Truck className="w-4 h-4" /> Driver Portal
+                </Button>
                 {isAdmin && (
                   <Button variant="outline" size="sm" onClick={() => { setOpen(false); navigate("/admin"); }}>
                     <Shield className="w-4 h-4" /> Admin
