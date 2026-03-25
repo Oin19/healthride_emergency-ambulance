@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, UserCircle, ArrowLeft } from "lucide-react";
+import { Menu, X, UserCircle, ArrowLeft, Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import healthrideLogo from "@/assets/healthride-logo.png";
 import { motion, AnimatePresence } from "framer-motion";
 import EmergencyRequestModal from "@/components/EmergencyRequestModal";
@@ -10,11 +11,19 @@ import EmergencyRequestModal from "@/components/EmergencyRequestModal";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [emergencyOpen, setEmergencyOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === "/";
   const links = ["Features", "How It Works", "Safety", "Contact"];
+
+  useEffect(() => {
+    if (!user) { setIsAdmin(false); return; }
+    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
+      setIsAdmin(!!data);
+    });
+  }, [user]);
 
   return (
     <>
