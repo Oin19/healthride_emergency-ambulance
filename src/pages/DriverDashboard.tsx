@@ -27,6 +27,7 @@ interface DriverProfile {
 interface AmbulanceRequest {
   id: string;
   patient_user_id: string | null;
+  driver_id: string | null;
   emergency_type: string;
   patient_name: string | null;
   patient_phone: string | null;
