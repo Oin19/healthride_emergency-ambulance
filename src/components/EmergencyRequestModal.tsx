@@ -2,11 +2,15 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X, MapPin, Navigation, Phone, AlertTriangle, Heart, Bone, Brain, Flame,
-  Stethoscope, ChevronRight, Loader2, CheckCircle2, Truck, Clock, User, Shield
+  Stethoscope, ChevronRight, Loader2, CheckCircle2, Truck, Clock, User, Shield, LogIn
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { cityCoordinates } from "@/data/cityCoordinates";
 import LiveTrackingMap from "@/components/LiveTrackingMap";
+import { useNavigate } from "react-router-dom";
 
 type Step = "location" | "details" | "dispatching" | "tracking";
 
@@ -14,23 +18,27 @@ interface EmergencyType {
   id: string;
   label: string;
   icon: React.ReactNode;
-  color: string;
 }
 
 const emergencyTypes: EmergencyType[] = [
-  { id: "cardiac", label: "Cardiac Emergency", icon: <Heart className="w-5 h-5" />, color: "text-accent" },
-  { id: "trauma", label: "Trauma / Injury", icon: <Bone className="w-5 h-5" />, color: "text-accent" },
-  { id: "stroke", label: "Stroke / Neuro", icon: <Brain className="w-5 h-5" />, color: "text-accent" },
-  { id: "burns", label: "Burns", icon: <Flame className="w-5 h-5" />, color: "text-accent" },
-  { id: "breathing", label: "Breathing Difficulty", icon: <Stethoscope className="w-5 h-5" />, color: "text-accent" },
-  { id: "other", label: "Other Emergency", icon: <AlertTriangle className="w-5 h-5" />, color: "text-accent" },
+  { id: "cardiac", label: "Cardiac Emergency", icon: <Heart className="w-5 h-5" /> },
+  { id: "trauma", label: "Trauma / Injury", icon: <Bone className="w-5 h-5" /> },
+  { id: "stroke", label: "Stroke / Neuro", icon: <Brain className="w-5 h-5" /> },
+  { id: "burns", label: "Burns", icon: <Flame className="w-5 h-5" /> },
+  { id: "breathing", label: "Breathing Difficulty", icon: <Stethoscope className="w-5 h-5" /> },
+  { id: "other", label: "Other Emergency", icon: <AlertTriangle className="w-5 h-5" /> },
 ];
 
-const paramedics = [
-  { name: "Dr. Arjun Mehta", id: "AMB-DL-4821", experience: "12 yrs", photo: "AM" },
-  { name: "Dr. Priya Sharma", id: "AMB-MU-3157", experience: "8 yrs", photo: "PS" },
-  { name: "Dr. Ravi Kumar", id: "AMB-BG-6093", experience: "15 yrs", photo: "RK" },
-];
+// Find nearest city from coordinates
+function findNearestCity(lat: number, lng: number): string {
+  let closest = "Delhi";
+  let minDist = Infinity;
+  for (const [name, c] of Object.entries(cityCoordinates)) {
+    const d = Math.sqrt((lat - c.lat) ** 2 + (lng - c.lng) ** 2);
+    if (d < minDist) { minDist = d; closest = name; }
+  }
+  return closest;
+}
 
 interface Props {
   open: boolean;
@@ -38,6 +46,8 @@ interface Props {
 }
 
 const EmergencyRequestModal = ({ open, onClose }: Props) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [step, setStep] = useState<Step>("location");
   const [locationText, setLocationText] = useState("");
   const [detecting, setDetecting] = useState(false);
@@ -46,9 +56,13 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
   const [patientName, setPatientName] = useState("");
   const [patientPhone, setPatientPhone] = useState("");
   const [notes, setNotes] = useState("");
-  const [dispatchProgress, setDispatchProgress] = useState(0);
+  const [requestId, setRequestId] = useState<string | null>(null);
+  const [driverInfo, setDriverInfo] = useState<{
+    full_name: string; mobile: string; vehicle_number: string; ambulance_type: string;
+    current_lat: number | null; current_lng: number | null;
+  } | null>(null);
   const [eta, setEta] = useState(0);
-  const [paramedic] = useState(() => paramedics[Math.floor(Math.random() * paramedics.length)]);
+  const [requestStatus, setRequestStatus] = useState("pending");
 
   // Reset on open
   useEffect(() => {
@@ -61,8 +75,10 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
       setPatientName("");
       setPatientPhone("");
       setNotes("");
-      setDispatchProgress(0);
+      setRequestId(null);
+      setDriverInfo(null);
       setEta(0);
+      setRequestStatus("pending");
     }
   }, [open]);
 
@@ -76,7 +92,6 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
           setDetecting(false);
         },
         () => {
-          // Fallback to Delhi coordinates
           setCoords({ lat: 28.6139, lng: 77.2090 });
           setLocationText("New Delhi (approximate)");
           setDetecting(false);
@@ -90,32 +105,99 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
     }
   }, []);
 
-  // Dispatch simulation
-  useEffect(() => {
-    if (step !== "dispatching") return;
-    const totalTime = 4000;
-    const interval = 50;
-    let elapsed = 0;
-    const timer = setInterval(() => {
-      elapsed += interval;
-      setDispatchProgress(Math.min((elapsed / totalTime) * 100, 100));
-      if (elapsed >= totalTime) {
-        clearInterval(timer);
-        setEta(Math.floor(Math.random() * 8) + 5);
-        setStep("tracking");
-      }
-    }, interval);
-    return () => clearInterval(timer);
-  }, [step]);
+  // Create real ambulance request
+  const dispatchAmbulance = useCallback(async () => {
+    if (!coords || !selectedType || !user) return;
 
-  // ETA countdown
+    setStep("dispatching");
+    const city = findNearestCity(coords.lat, coords.lng);
+
+    const { data, error } = await supabase
+      .from("ambulance_requests")
+      .insert({
+        patient_user_id: user.id,
+        emergency_type: selectedType,
+        patient_name: patientName || null,
+        patient_phone: patientPhone || null,
+        patient_lat: coords.lat,
+        patient_lng: coords.lng,
+        patient_address: locationText || null,
+        notes: notes || null,
+        city,
+        status: "pending",
+      })
+      .select("id")
+      .single();
+
+    if (error) {
+      console.error("Error creating request:", error);
+      setStep("details");
+      return;
+    }
+
+    setRequestId(data.id);
+    // Now wait for a driver to accept via realtime
+    setStep("tracking");
+    setRequestStatus("pending");
+  }, [coords, selectedType, user, patientName, patientPhone, locationText, notes]);
+
+  // Subscribe to request updates (driver acceptance, location updates)
   useEffect(() => {
-    if (step !== "tracking" || eta <= 0) return;
-    const timer = setInterval(() => {
-      setEta((prev) => Math.max(prev - 1, 0));
-    }, 60000);
-    return () => clearInterval(timer);
-  }, [step, eta]);
+    if (!requestId) return;
+
+    const channel = supabase
+      .channel(`request-${requestId}`)
+      .on("postgres_changes", {
+        event: "UPDATE",
+        schema: "public",
+        table: "ambulance_requests",
+        filter: `id=eq.${requestId}`,
+      }, async (payload) => {
+        const updated = payload.new as any;
+        setRequestStatus(updated.status);
+        if (updated.eta_minutes) setEta(updated.eta_minutes);
+
+        // Fetch driver info when driver accepts
+        if (updated.driver_id && !driverInfo) {
+          const { data: driver } = await supabase
+            .from("driver_profiles")
+            .select("full_name, mobile, vehicle_number, ambulance_type, current_lat, current_lng")
+            .eq("id", updated.driver_id)
+            .single();
+          if (driver) setDriverInfo(driver);
+        }
+
+        // Update driver location
+        if (updated.driver_lat && updated.driver_lng) {
+          setDriverInfo((prev) => prev ? { ...prev, current_lat: updated.driver_lat, current_lng: updated.driver_lng } : prev);
+        }
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [requestId, driverInfo]);
+
+  // Also poll driver location periodically when we have a driver
+  useEffect(() => {
+    if (!requestId || !driverInfo || requestStatus === "completed") return;
+
+    const pollInterval = setInterval(async () => {
+      const { data } = await supabase
+        .from("ambulance_requests")
+        .select("driver_lat, driver_lng, eta_minutes, status")
+        .eq("id", requestId)
+        .single();
+      if (data) {
+        setRequestStatus(data.status);
+        if (data.eta_minutes) setEta(data.eta_minutes);
+        if (data.driver_lat && data.driver_lng) {
+          setDriverInfo((prev) => prev ? { ...prev, current_lat: data.driver_lat, current_lng: data.driver_lng } : prev);
+        }
+      }
+    }, 10000);
+
+    return () => clearInterval(pollInterval);
+  }, [requestId, driverInfo, requestStatus]);
 
   if (!open) return null;
 
@@ -161,11 +243,20 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                     <p className="text-muted-foreground text-sm">We need your location to dispatch the nearest ambulance.</p>
                   </div>
 
+                  {!user && (
+                    <div className="p-4 rounded-xl bg-accent/10 border border-accent/30">
+                      <p className="text-sm text-foreground mb-2 font-medium">You need to sign in to request an ambulance</p>
+                      <Button variant="emergency" size="sm" onClick={() => { onClose(); navigate("/auth"); }} className="gap-1.5">
+                        <LogIn className="w-4 h-4" /> Sign In
+                      </Button>
+                    </div>
+                  )}
+
                   <Button
                     variant="emergency"
                     className="w-full h-14 text-base gap-2"
                     onClick={detectLocation}
-                    disabled={detecting}
+                    disabled={detecting || !user}
                   >
                     {detecting ? (
                       <><Loader2 className="w-5 h-5 animate-spin" /> Detecting Location...</>
@@ -199,6 +290,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                       }}
                       placeholder="Building name, street, landmark..."
                       className="pl-10 h-12 bg-card border-border"
+                      disabled={!user}
                     />
                   </div>
 
@@ -206,7 +298,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                     variant="emergency"
                     size="lg"
                     className="w-full gap-2"
-                    disabled={!locationText.trim()}
+                    disabled={!locationText.trim() || !user}
                     onClick={() => setStep("details")}
                   >
                     Continue <ChevronRight className="w-4 h-4" />
@@ -262,7 +354,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                       variant="emergency"
                       className="flex-[2] gap-2"
                       disabled={!selectedType}
-                      onClick={() => setStep("dispatching")}
+                      onClick={dispatchAmbulance}
                     >
                       <AlertTriangle className="w-4 h-4" /> Dispatch Ambulance
                     </Button>
@@ -274,23 +366,14 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
               {step === "dispatching" && (
                 <motion.div key="dispatching" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="text-center space-y-8 py-12">
                   <div className="relative w-28 h-28 mx-auto">
-                    <div className="absolute inset-0 rounded-full bg-accent/20 animate-pulse-ring" />
-                    <div className="absolute inset-2 rounded-full bg-accent/30 animate-pulse-ring" style={{ animationDelay: "0.5s" }} />
+                    <div className="absolute inset-0 rounded-full bg-accent/20 animate-pulse" />
                     <div className="absolute inset-0 flex items-center justify-center rounded-full bg-gradient-emergency">
                       <Truck className="w-10 h-10 text-accent-foreground" />
                     </div>
                   </div>
-
                   <div>
-                    <h2 className="font-display text-2xl font-bold text-foreground mb-2">Dispatching Ambulance</h2>
-                    <p className="text-muted-foreground text-sm">Connecting you with the nearest available unit...</p>
-                  </div>
-
-                  <div className="max-w-xs mx-auto">
-                    <div className="h-2 rounded-full bg-secondary overflow-hidden">
-                      <motion.div className="h-full bg-gradient-emergency rounded-full" style={{ width: `${dispatchProgress}%` }} />
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-2">{Math.round(dispatchProgress)}% — Finding nearest ambulance</p>
+                    <h2 className="font-display text-2xl font-bold text-foreground mb-2">Creating Request...</h2>
+                    <p className="text-muted-foreground text-sm">Sending your emergency request to nearby drivers</p>
                   </div>
                 </motion.div>
               )}
@@ -298,37 +381,74 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
               {/* STEP 4: Tracking */}
               {step === "tracking" && (
                 <motion.div key="tracking" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                  {/* ETA Card */}
-                  <div className="bg-gradient-emergency rounded-2xl p-6 text-center text-accent-foreground">
-                    <p className="text-sm font-medium opacity-90 mb-1">Estimated Arrival</p>
-                    <div className="flex items-center justify-center gap-2">
-                      <Clock className="w-6 h-6" />
-                      <span className="font-display text-5xl font-bold">{eta}</span>
-                      <span className="text-lg font-medium">min</span>
+                  {/* Status */}
+                  {requestStatus === "pending" && !driverInfo && (
+                    <div className="bg-accent/5 border border-accent/30 rounded-2xl p-6 text-center">
+                      <Loader2 className="w-8 h-8 animate-spin text-accent mx-auto mb-3" />
+                      <h3 className="font-display text-xl font-bold text-foreground mb-1">Waiting for a Driver</h3>
+                      <p className="text-muted-foreground text-sm">Your request has been sent to nearby ambulance drivers. Hang tight!</p>
+                      <p className="text-xs text-muted-foreground mt-2">Request ID: {requestId?.slice(0, 8)}</p>
                     </div>
-                    <p className="text-sm opacity-80 mt-2">Ambulance is on the way</p>
-                  </div>
+                  )}
 
-                  {/* Paramedic Card */}
-                  <div className="bg-card border border-border rounded-xl p-5">
-                    <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider font-medium">Assigned Paramedic</p>
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-full bg-gradient-trust flex items-center justify-center text-trust-foreground font-display font-bold text-lg">
-                        {paramedic.photo}
+                  {/* Driver Accepted */}
+                  {driverInfo && (
+                    <>
+                      {/* ETA Card */}
+                      <div className="bg-gradient-emergency rounded-2xl p-6 text-center text-accent-foreground">
+                        <p className="text-sm font-medium opacity-90 mb-1">Estimated Arrival</p>
+                        <div className="flex items-center justify-center gap-2">
+                          <Clock className="w-6 h-6" />
+                          <span className="font-display text-5xl font-bold">{eta || "—"}</span>
+                          <span className="text-lg font-medium">min</span>
+                        </div>
+                        <p className="text-sm opacity-80 mt-2">
+                          {requestStatus === "accepted" ? "Driver is on the way" :
+                           requestStatus === "arrived" ? "Driver has arrived!" :
+                           requestStatus === "completed" ? "Trip completed" :
+                           "Ambulance is en route"}
+                        </p>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-display font-semibold text-foreground">{paramedic.name}</h3>
-                        <p className="text-sm text-muted-foreground">Unit {paramedic.id} · {paramedic.experience} experience</p>
-                      </div>
-                      <a href="tel:102" className="p-3 rounded-full bg-success/10 text-success hover:bg-success/20 transition-colors">
-                        <Phone className="w-5 h-5" />
-                      </a>
-                    </div>
-                  </div>
 
-                  {/* Live Map */}
-                  {coords && (
-                    <LiveTrackingMap patientCoords={coords} />
+                      {/* Driver Card */}
+                      <div className="bg-card border border-border rounded-xl p-5">
+                        <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider font-medium">Your Driver</p>
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 rounded-full bg-gradient-trust flex items-center justify-center text-trust-foreground font-display font-bold text-lg">
+                            {driverInfo.full_name.split(" ").map(n => n[0]).join("").slice(0, 2)}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-display font-semibold text-foreground">{driverInfo.full_name}</h3>
+                            <p className="text-sm text-muted-foreground">{driverInfo.vehicle_number} · {driverInfo.ambulance_type}</p>
+                          </div>
+                          <a href={`tel:${driverInfo.mobile}`} className="p-3 rounded-full bg-success/10 text-success hover:bg-success/20 transition-colors">
+                            <Phone className="w-5 h-5" />
+                          </a>
+                        </div>
+                      </div>
+
+                      {/* Live Map showing driver location */}
+                      {driverInfo.current_lat && driverInfo.current_lng && (
+                        <div className="rounded-xl overflow-hidden border border-border">
+                          <iframe
+                            title="Driver Location"
+                            src={`https://www.openstreetmap.org/export/embed.html?bbox=${Math.min(driverInfo.current_lng, coords?.lng || 0) - 0.01}%2C${Math.min(driverInfo.current_lat, coords?.lat || 0) - 0.008}%2C${Math.max(driverInfo.current_lng, coords?.lng || 0) + 0.01}%2C${Math.max(driverInfo.current_lat, coords?.lat || 0) + 0.008}&layer=mapnik&marker=${driverInfo.current_lat}%2C${driverInfo.current_lng}`}
+                            style={{ width: "100%", height: "260px", border: 0 }}
+                            allowFullScreen
+                            loading="lazy"
+                          />
+                          <div className="flex items-center gap-2 px-3 py-2 bg-card text-xs text-muted-foreground">
+                            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                            Live tracking — Driver location updating in real-time
+                          </div>
+                        </div>
+                      )}
+
+                      {/* If no driver GPS yet, show patient location */}
+                      {(!driverInfo.current_lat || !driverInfo.current_lng) && coords && (
+                        <LiveTrackingMap patientCoords={coords} />
+                      )}
+                    </>
                   )}
 
                   {/* Status & Safety */}

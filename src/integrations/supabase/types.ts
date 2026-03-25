@@ -14,6 +14,130 @@ export type Database = {
   }
   public: {
     Tables: {
+      ambulance_requests: {
+        Row: {
+          city: string
+          created_at: string
+          driver_id: string | null
+          driver_lat: number | null
+          driver_lng: number | null
+          emergency_type: string
+          eta_minutes: number | null
+          id: string
+          notes: string | null
+          patient_address: string | null
+          patient_lat: number
+          patient_lng: number
+          patient_name: string | null
+          patient_phone: string | null
+          patient_user_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          city?: string
+          created_at?: string
+          driver_id?: string | null
+          driver_lat?: number | null
+          driver_lng?: number | null
+          emergency_type: string
+          eta_minutes?: number | null
+          id?: string
+          notes?: string | null
+          patient_address?: string | null
+          patient_lat: number
+          patient_lng: number
+          patient_name?: string | null
+          patient_phone?: string | null
+          patient_user_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          driver_id?: string | null
+          driver_lat?: number | null
+          driver_lng?: number | null
+          emergency_type?: string
+          eta_minutes?: number | null
+          id?: string
+          notes?: string | null
+          patient_address?: string | null
+          patient_lat?: number
+          patient_lng?: number
+          patient_name?: string | null
+          patient_phone?: string | null
+          patient_user_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambulance_requests_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "driver_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      driver_profiles: {
+        Row: {
+          ambulance_type: string
+          city: string
+          created_at: string
+          current_lat: number | null
+          current_lng: number | null
+          full_name: string
+          id: string
+          is_available: boolean
+          mobile: string
+          registration_id: string | null
+          updated_at: string
+          user_id: string
+          vehicle_number: string
+        }
+        Insert: {
+          ambulance_type: string
+          city?: string
+          created_at?: string
+          current_lat?: number | null
+          current_lng?: number | null
+          full_name: string
+          id?: string
+          is_available?: boolean
+          mobile: string
+          registration_id?: string | null
+          updated_at?: string
+          user_id: string
+          vehicle_number: string
+        }
+        Update: {
+          ambulance_type?: string
+          city?: string
+          created_at?: string
+          current_lat?: number | null
+          current_lng?: number | null
+          full_name?: string
+          id?: string
+          is_available?: boolean
+          mobile?: string
+          registration_id?: string | null
+          updated_at?: string
+          user_id?: string
+          vehicle_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_profiles_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "driver_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       driver_registrations: {
         Row: {
           admin_notes: string | null
