@@ -48,6 +48,11 @@ const Navbar = () => {
               </a>
             ))}
             <Button variant="emergency" size="sm" onClick={() => setEmergencyOpen(true)}>Request Ambulance</Button>
+            {isAdmin && (
+              <Button variant="outline" size="sm" onClick={() => navigate("/admin")}>
+                <Shield className="w-4 h-4" /> Admin
+              </Button>
+            )}
             <Button variant="hero" size="sm" onClick={() => navigate(user ? "/profile" : "/auth")}>
               <UserCircle className="w-4 h-4" /> {user ? "Profile" : "Sign In"}
             </Button>
