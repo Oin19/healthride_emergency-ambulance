@@ -10,6 +10,8 @@ import Admin from "./pages/Admin.tsx";
 import Profile from "./pages/Profile.tsx";
 import Privacy from "./pages/Privacy.tsx";
 import Terms from "./pages/Terms.tsx";
+import DriverAuth from "./pages/DriverAuth.tsx";
+import DriverDashboard from "./pages/DriverDashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,8 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/driver-auth" element={<DriverAuth />} />
+            <Route path="/driver" element={<DriverDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
