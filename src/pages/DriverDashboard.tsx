@@ -9,7 +9,7 @@ import {
   User, Clock, CheckCircle2, XCircle, Loader2
 } from "lucide-react";
 import healthrideLogo from "@/assets/healthride-logo.png";
-import { cityCoordinates } from "@/data/cityCoordinates";
+import { cityCoordinates, findNearestCity } from "@/data/cityCoordinates";
 
 interface DriverProfile {
   id: string;
@@ -80,11 +80,12 @@ const DriverDashboard = () => {
     watchIdRef.current = navigator.geolocation.watchPosition(
       async (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords;
+        const detectedCity = findNearestCity(lat, lng);
         await supabase
           .from("driver_profiles")
-          .update({ current_lat: lat, current_lng: lng })
+          .update({ current_lat: lat, current_lng: lng, city: detectedCity })
           .eq("id", profile.id);
-        setProfile((prev) => prev ? { ...prev, current_lat: lat, current_lng: lng } : prev);
+        setProfile((prev) => prev ? { ...prev, current_lat: lat, current_lng: lng, city: detectedCity } : prev);
       },
       () => { /* ignore errors */ },
       { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }

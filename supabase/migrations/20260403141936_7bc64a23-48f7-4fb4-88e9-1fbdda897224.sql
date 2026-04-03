@@ -1,0 +1,1 @@
+UPDATE driver_profiles SET city = 'Kolkata' WHERE vehicle_number = 'ADMIN-001';
