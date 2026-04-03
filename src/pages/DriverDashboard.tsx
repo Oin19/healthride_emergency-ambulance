@@ -9,7 +9,7 @@ import {
   User, Clock, CheckCircle2, XCircle, Loader2
 } from "lucide-react";
 import healthrideLogo from "@/assets/healthride-logo.png";
-import { cityCoordinates } from "@/data/cityCoordinates";
+import { cityCoordinates, findNearestCity } from "@/data/cityCoordinates";
 
 interface DriverProfile {
   id: string;
