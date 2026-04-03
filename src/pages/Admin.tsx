@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Loader2, Shield, Trash2, Pencil, CheckCircle, XCircle } from "lucide-react";
+import { ArrowLeft, Loader2, Shield, Trash2, Pencil, CheckCircle, XCircle, Map } from "lucide-react";
+import AdminLiveMap from "@/components/AdminLiveMap";
 import { useToast } from "@/hooks/use-toast";
 
 type DriverReg = {
