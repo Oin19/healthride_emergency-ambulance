@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Loader2, Shield, Trash2, Pencil, CheckCircle, XCircle } from "lucide-react";
+import { ArrowLeft, Loader2, Shield, Trash2, Pencil, CheckCircle, XCircle, Map } from "lucide-react";
+import AdminLiveMap from "@/components/AdminLiveMap";
 import { useToast } from "@/hooks/use-toast";
 
 type DriverReg = {
@@ -167,11 +168,16 @@ const Admin = () => {
           </CardContent></Card>
         </div>
 
-        <Tabs defaultValue="drivers">
+        <Tabs defaultValue="live-map">
           <TabsList className="mb-4">
+            <TabsTrigger value="live-map" className="flex items-center gap-1.5"><Map className="w-4 h-4" /> Live Map</TabsTrigger>
             <TabsTrigger value="drivers">Driver Registrations</TabsTrigger>
             <TabsTrigger value="hospitals">Hospital Registrations</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="live-map">
+            <AdminLiveMap />
+          </TabsContent>
 
           <TabsContent value="drivers">
             <Card>
