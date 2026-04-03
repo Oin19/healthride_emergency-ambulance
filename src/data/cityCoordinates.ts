@@ -28,3 +28,13 @@ export const cityCoordinates: Record<string, CityCoords> = {
 };
 
 export const getCityList = () => Object.keys(cityCoordinates).sort();
+
+export const findNearestCity = (lat: number, lng: number): string => {
+  let nearest = "Delhi";
+  let minDist = Infinity;
+  for (const [name, c] of Object.entries(cityCoordinates)) {
+    const d = Math.sqrt((c.lat - lat) ** 2 + (c.lng - lng) ** 2);
+    if (d < minDist) { minDist = d; nearest = name; }
+  }
+  return nearest;
+};
