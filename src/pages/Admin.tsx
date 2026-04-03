@@ -168,11 +168,16 @@ const Admin = () => {
           </CardContent></Card>
         </div>
 
-        <Tabs defaultValue="drivers">
+        <Tabs defaultValue="live-map">
           <TabsList className="mb-4">
+            <TabsTrigger value="live-map" className="flex items-center gap-1.5"><Map className="w-4 h-4" /> Live Map</TabsTrigger>
             <TabsTrigger value="drivers">Driver Registrations</TabsTrigger>
             <TabsTrigger value="hospitals">Hospital Registrations</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="live-map">
+            <AdminLiveMap />
+          </TabsContent>
 
           <TabsContent value="drivers">
             <Card>
