@@ -14,6 +14,8 @@ export interface Hospital {
 }
 
 export const indianHospitals: Hospital[] = [
+  // ========== METRO CITIES ==========
+
   // Delhi NCR
   { name: "AIIMS New Delhi", city: "Delhi", area: "Ansari Nagar", lat: 28.5672, lng: 77.2100, rating: 4.9, beds: 45, specialties: ["Trauma", "Cardiology", "Neurology", "Oncology"], insurance: ["CGHS", "ECHS", "Ayushman Bharat", "Star Health"], verified: true, level: "Level I Trauma", phone: "+91-11-26588500" },
   { name: "Safdarjung Hospital", city: "Delhi", area: "Ring Road", lat: 28.5685, lng: 77.2065, rating: 4.5, beds: 38, specialties: ["Emergency", "Orthopedics", "Burns", "Pediatrics"], insurance: ["CGHS", "ECHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-11-26707437" },
@@ -114,9 +116,242 @@ export const indianHospitals: Hospital[] = [
   // Visakhapatnam
   { name: "King George Hospital", city: "Visakhapatnam", area: "Maharanipeta", lat: 17.7150, lng: 83.3060, rating: 4.3, beds: 40, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Aarogyasri"], verified: true, level: "Level I Trauma", phone: "+91-891-2564891" },
   { name: "CARE Hospitals Vizag", city: "Visakhapatnam", area: "Ramnagar", lat: 17.7270, lng: 83.3190, rating: 4.6, beds: 18, specialties: ["Cardiology", "Neurosciences", "Orthopedics", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "Aarogyasri", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-891-3041444" },
+
+  // ========== TIER-2 / SEMI-URBAN CITIES ==========
+
+  // Nagpur
+  { name: "Government Medical College Nagpur", city: "Nagpur", area: "Hanuman Nagar", lat: 21.1485, lng: 79.0842, rating: 4.3, beds: 45, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Mahatma Phule Jan Arogya"], verified: true, level: "Level I Trauma", phone: "+91-712-2722367" },
+  { name: "KIMS Kingsway Hospital", city: "Nagpur", area: "Kingsway", lat: 21.1574, lng: 79.0728, rating: 4.5, beds: 18, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "ICICI Lombard", "Bajaj Allianz"], verified: true, level: "Multi Speciality", phone: "+91-712-2460000" },
+  { name: "Wockhardt Hospital Nagpur", city: "Nagpur", area: "Shankar Nagar", lat: 21.1390, lng: 79.0635, rating: 4.4, beds: 14, specialties: ["Cardiology", "Orthopedics", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-712-6613000" },
+
+  // Varanasi
+  { name: "BHU - Sir Sunderlal Hospital", city: "Varanasi", area: "Lanka", lat: 25.2677, lng: 83.0166, rating: 4.6, beds: 50, specialties: ["Trauma", "Cardiology", "Neurology", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-542-2307002" },
+  { name: "Heritage Hospital", city: "Varanasi", area: "Lanka", lat: 25.2730, lng: 83.0000, rating: 4.4, beds: 14, specialties: ["Cardiology", "Nephrology", "Orthopedics", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Ayushman Bharat"], verified: true, level: "Multi Speciality", phone: "+91-542-2220222" },
+
+  // Agra
+  { name: "S.N. Medical College", city: "Agra", area: "Hospital Road", lat: 27.1882, lng: 78.0068, rating: 4.2, beds: 40, specialties: ["Trauma", "Emergency", "General Surgery", "Pediatrics"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-562-2260362" },
+  { name: "Pushpanjali Hospital", city: "Agra", area: "Delhi Gate", lat: 27.1950, lng: 78.0230, rating: 4.4, beds: 16, specialties: ["Cardiology", "Orthopedics", "Neurology", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Bajaj Allianz"], verified: true, level: "Multi Speciality", phone: "+91-562-2530277" },
+
+  // Madurai
+  { name: "Government Rajaji Hospital", city: "Madurai", area: "Panagal Road", lat: 9.9195, lng: 78.1193, rating: 4.3, beds: 50, specialties: ["Trauma", "Emergency", "General Surgery", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat", "CMCHIS"], verified: true, level: "Level I Trauma", phone: "+91-452-2532535" },
+  { name: "Meenakshi Mission Hospital", city: "Madurai", area: "Lake Area", lat: 9.9060, lng: 78.1300, rating: 4.6, beds: 20, specialties: ["Cardiology", "Oncology", "Neurosciences", "Orthopedics"], insurance: ["Star Health", "HDFC Ergo", "ICICI Lombard", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-452-4288888" },
+  { name: "Apollo Hospitals Madurai", city: "Madurai", area: "KK Nagar", lat: 9.9300, lng: 78.0900, rating: 4.5, beds: 16, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Gastroenterology"], insurance: ["Star Health", "Bajaj Allianz", "CMCHIS"], verified: true, level: "Multi Speciality", phone: "+91-452-4244444" },
+
+  // Ranchi
+  { name: "RIMS Ranchi", city: "Ranchi", area: "Bariatu", lat: 23.3690, lng: 85.3300, rating: 4.4, beds: 40, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-651-2540629" },
+  { name: "Medica Superspecialty Hospital Ranchi", city: "Ranchi", area: "Harmu", lat: 23.3600, lng: 85.3000, rating: 4.5, beds: 16, specialties: ["Cardiology", "Neurosciences", "Orthopedics", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "Bajaj Allianz"], verified: true, level: "Multi Speciality", phone: "+91-651-7106100" },
+
+  // Raipur
+  { name: "AIIMS Raipur", city: "Raipur", area: "Tatibandh", lat: 21.2840, lng: 81.6040, rating: 4.7, beds: 35, specialties: ["Trauma", "Cardiology", "Neurology", "Oncology"], insurance: ["CGHS", "ECHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-771-2572249" },
+  { name: "Ramkrishna CARE Hospital", city: "Raipur", area: "Aurobindo Enclave", lat: 21.2400, lng: 81.6350, rating: 4.5, beds: 18, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Ayushman Bharat", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-771-4020000" },
+
+  // Dehradun
+  { name: "AIIMS Rishikesh", city: "Dehradun", area: "Rishikesh", lat: 30.0869, lng: 78.2676, rating: 4.8, beds: 40, specialties: ["Trauma", "Cardiology", "Neurology", "Oncology"], insurance: ["CGHS", "ECHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-135-2462930" },
+  { name: "Max Super Speciality Hospital Dehradun", city: "Dehradun", area: "Mussoorie Road", lat: 30.3400, lng: 78.0600, rating: 4.6, beds: 18, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "Max Bupa", "Bajaj Allianz"], verified: true, level: "Multi Speciality", phone: "+91-135-6673000" },
+
+  // Mysore
+  { name: "K.R. Hospital", city: "Mysore", area: "Irwin Road", lat: 12.3050, lng: 76.6550, rating: 4.3, beds: 35, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Arogya Karnataka"], verified: true, level: "Level I Trauma", phone: "+91-821-2520043" },
+  { name: "Apollo BGS Hospitals", city: "Mysore", area: "Adichunchanagiri Road", lat: 12.2800, lng: 76.6250, rating: 4.6, beds: 18, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "ICICI Lombard", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-821-2568888" },
+  { name: "JSS Hospital", city: "Mysore", area: "MG Road", lat: 12.3100, lng: 76.6400, rating: 4.5, beds: 22, specialties: ["Cardiology", "Nephrology", "Orthopedics", "Oncology"], insurance: ["Ayushman Bharat", "Star Health", "Arogya Karnataka"], verified: true, level: "Multi Speciality", phone: "+91-821-2548400" },
+
+  // Jodhpur
+  { name: "AIIMS Jodhpur", city: "Jodhpur", area: "Basni Phase II", lat: 26.2500, lng: 72.9950, rating: 4.7, beds: 35, specialties: ["Trauma", "Cardiology", "Neurology", "Oncology"], insurance: ["CGHS", "ECHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-291-2740741" },
+  { name: "MDM Hospital", city: "Jodhpur", area: "Shastri Nagar", lat: 26.2780, lng: 73.0190, rating: 4.3, beds: 40, specialties: ["Trauma", "Emergency", "General Surgery", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat", "Bhamashah"], verified: true, level: "Level I Trauma", phone: "+91-291-2636041" },
+
+  // Udaipur
+  { name: "MB Hospital", city: "Udaipur", area: "Chetak Circle", lat: 24.5820, lng: 73.6930, rating: 4.2, beds: 30, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Bhamashah"], verified: true, level: "District Hospital", phone: "+91-294-2528811" },
+  { name: "GBH American Hospital", city: "Udaipur", area: "Hiran Magri", lat: 24.5700, lng: 73.7300, rating: 4.5, beds: 16, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Bajaj Allianz"], verified: true, level: "Multi Speciality", phone: "+91-294-2451500" },
+
+  // Allahabad (Prayagraj)
+  { name: "Swaroop Rani Nehru Hospital", city: "Allahabad", area: "Lowther Road", lat: 25.4400, lng: 81.8430, rating: 4.2, beds: 35, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-532-2256720" },
+  { name: "Kamla Nehru Hospital", city: "Allahabad", area: "Tagore Town", lat: 25.4500, lng: 81.8500, rating: 4.3, beds: 20, specialties: ["Gynecology", "Pediatrics", "Emergency", "Internal Medicine"], insurance: ["Ayushman Bharat", "Star Health"], verified: true, level: "District Hospital", phone: "+91-532-2407021" },
+
+  // Tiruchirappalli (Trichy)
+  { name: "Mahatma Gandhi Memorial Government Hospital", city: "Tiruchirappalli", area: "Puthur", lat: 10.8100, lng: 78.6900, rating: 4.3, beds: 40, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "CMCHIS"], verified: true, level: "Level I Trauma", phone: "+91-431-2407576" },
+  { name: "Kaveri Medical Center", city: "Tiruchirappalli", area: "Cantonment", lat: 10.8000, lng: 78.7050, rating: 4.5, beds: 16, specialties: ["Cardiology", "Neurosciences", "Orthopedics", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-431-4077777" },
+
+  // Jalandhar
+  { name: "Civil Hospital Jalandhar", city: "Jalandhar", area: "Grand Trunk Road", lat: 31.3200, lng: 75.5700, rating: 4.2, beds: 30, specialties: ["Trauma", "Emergency", "General Surgery", "Pediatrics"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "District Hospital", phone: "+91-181-2222054" },
+  { name: "Ivy Hospital", city: "Jalandhar", area: "Pathankot Road", lat: 31.3400, lng: 75.5550, rating: 4.5, beds: 16, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Bajaj Allianz", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-181-5077777" },
+
+  // Mangalore
+  { name: "KMC Hospital Mangalore", city: "Mangalore", area: "Attavar", lat: 12.8700, lng: 74.8420, rating: 4.7, beds: 30, specialties: ["Cardiology", "Neurology", "Oncology", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat", "Star Health", "Arogya Karnataka"], verified: true, level: "Multi Speciality", phone: "+91-824-2445858" },
+  { name: "AJ Hospital", city: "Mangalore", area: "Kuntikana", lat: 12.9000, lng: 74.8500, rating: 4.5, beds: 18, specialties: ["Cardiology", "Orthopedics", "Gastroenterology", "Nephrology"], insurance: ["Star Health", "HDFC Ergo", "Bajaj Allianz"], verified: true, level: "Multi Speciality", phone: "+91-824-2225533" },
+
+  // Siliguri
+  { name: "North Bengal Medical College", city: "Siliguri", area: "Sushruta Nagar", lat: 26.7100, lng: 88.4200, rating: 4.3, beds: 35, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Swasthya Sathi"], verified: true, level: "Level I Trauma", phone: "+91-353-2585266" },
+  { name: "Desun Hospital Siliguri", city: "Siliguri", area: "Matigara", lat: 26.6900, lng: 88.3800, rating: 4.4, beds: 14, specialties: ["Cardiology", "Neurosciences", "Orthopedics", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Swasthya Sathi"], verified: true, level: "Multi Speciality", phone: "+91-353-2544544" },
+
+  // Hubli-Dharwad
+  { name: "KIMS Hubli", city: "Hubli", area: "Vidyanagar", lat: 15.3700, lng: 75.1200, rating: 4.5, beds: 30, specialties: ["Trauma", "Cardiology", "Neurology", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat", "Arogya Karnataka"], verified: true, level: "Level I Trauma", phone: "+91-836-2378888" },
+  { name: "SDM College of Medical Sciences", city: "Dharwad", area: "Sattur", lat: 15.4600, lng: 75.0150, rating: 4.4, beds: 22, specialties: ["Cardiology", "Orthopedics", "Pediatrics", "General Surgery"], insurance: ["Ayushman Bharat", "Arogya Karnataka", "Star Health"], verified: true, level: "Multi Speciality", phone: "+91-836-2462692" },
+
+  // Gorakhpur
+  { name: "BRD Medical College", city: "Gorakhpur", area: "Medical College Road", lat: 26.7500, lng: 83.3700, rating: 4.2, beds: 40, specialties: ["Trauma", "Pediatrics", "Emergency", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-551-2505091" },
+  { name: "Provident Hospital", city: "Gorakhpur", area: "Golghar", lat: 26.7650, lng: 83.3800, rating: 4.3, beds: 12, specialties: ["Cardiology", "Orthopedics", "Gastroenterology"], insurance: ["Star Health", "Ayushman Bharat"], verified: true, level: "Multi Speciality", phone: "+91-551-2334455" },
+
+  // Cuttack
+  { name: "SCB Medical College", city: "Cuttack", area: "Mangalabag", lat: 20.4700, lng: 85.8800, rating: 4.4, beds: 45, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Biju Swasthya Kalyan Yojana"], verified: true, level: "Level I Trauma", phone: "+91-671-2414080" },
+  { name: "Ashwini Hospital", city: "Cuttack", area: "Sector 1", lat: 20.4600, lng: 85.8900, rating: 4.3, beds: 14, specialties: ["Cardiology", "Orthopedics", "Nephrology", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Biju Swasthya Kalyan Yojana"], verified: true, level: "Multi Speciality", phone: "+91-671-2365095" },
+
+  // Jammu
+  { name: "Government Medical College Jammu", city: "Jammu", area: "Bakshi Nagar", lat: 32.7300, lng: 74.8600, rating: 4.3, beds: 35, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "ECHS", "AB-PMJAY SEHAT"], verified: true, level: "Level I Trauma", phone: "+91-191-2584235" },
+  { name: "Acharya Shri Chander College of Medical Sciences", city: "Jammu", area: "Sidhra", lat: 32.7500, lng: 74.9000, rating: 4.4, beds: 18, specialties: ["Cardiology", "Orthopedics", "Neurosciences"], insurance: ["Star Health", "HDFC Ergo", "AB-PMJAY SEHAT"], verified: true, level: "Multi Speciality", phone: "+91-191-2584800" },
+
+  // Aurangabad
+  { name: "Government Medical College Aurangabad", city: "Aurangabad", area: "Panchakki Road", lat: 19.8800, lng: 75.3300, rating: 4.2, beds: 38, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Mahatma Phule Jan Arogya"], verified: true, level: "Level I Trauma", phone: "+91-240-2400400" },
+  { name: "MGM Hospital Aurangabad", city: "Aurangabad", area: "N-6, Cidco", lat: 19.8900, lng: 75.3600, rating: 4.5, beds: 18, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "Mahatma Phule Jan Arogya"], verified: true, level: "Multi Speciality", phone: "+91-240-2482682" },
+
+  // Amritsar
+  { name: "Government Medical College Amritsar", city: "Amritsar", area: "Circular Road", lat: 31.6300, lng: 74.8700, rating: 4.3, beds: 35, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-183-2221095" },
+  { name: "Fortis Escorts Hospital Amritsar", city: "Amritsar", area: "Majitha Road", lat: 31.6500, lng: 74.8600, rating: 4.6, beds: 16, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Bajaj Allianz", "ICICI Lombard"], verified: true, level: "Multi Speciality", phone: "+91-183-5011222" },
+
+  // Vijayawada
+  { name: "Government General Hospital Vijayawada", city: "Vijayawada", area: "Eluru Road", lat: 16.5100, lng: 80.6300, rating: 4.2, beds: 40, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Aarogyasri", "NTR Vaidya Seva"], verified: true, level: "Level I Trauma", phone: "+91-866-2577244" },
+  { name: "Manipal Hospital Vijayawada", city: "Vijayawada", area: "Tadepalli", lat: 16.4800, lng: 80.6400, rating: 4.5, beds: 16, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Oncology"], insurance: ["Star Health", "HDFC Ergo", "Aarogyasri", "NTR Vaidya Seva"], verified: true, level: "Multi Speciality", phone: "+91-866-2455555" },
+
+  // Nashik
+  { name: "Civil Hospital Nashik", city: "Nashik", area: "Old Agra Road", lat: 20.0000, lng: 73.7900, rating: 4.2, beds: 30, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Mahatma Phule Jan Arogya"], verified: true, level: "District Hospital", phone: "+91-253-2308805" },
+  { name: "Wockhardt Hospital Nashik", city: "Nashik", area: "Bytco Point", lat: 19.9900, lng: 73.7800, rating: 4.4, beds: 14, specialties: ["Cardiology", "Orthopedics", "Neurosciences"], insurance: ["Star Health", "HDFC Ergo", "Bajaj Allianz"], verified: true, level: "Multi Speciality", phone: "+91-253-6606060" },
+
+  // Nellore
+  { name: "Government General Hospital Nellore", city: "Nellore", area: "Dargamitta", lat: 14.4400, lng: 79.9800, rating: 4.1, beds: 25, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["Ayushman Bharat", "Aarogyasri", "NTR Vaidya Seva"], verified: true, level: "District Hospital", phone: "+91-861-2314457" },
+  { name: "Narayana Medical College Hospital", city: "Nellore", area: "Chinthareddypalem", lat: 14.4300, lng: 79.9700, rating: 4.4, beds: 18, specialties: ["Cardiology", "Orthopedics", "Nephrology", "Gastroenterology"], insurance: ["Star Health", "Aarogyasri", "HDFC Ergo"], verified: true, level: "Multi Speciality", phone: "+91-861-2317963" },
+
+  // Shimla
+  { name: "IGMC Shimla", city: "Shimla", area: "Ridge", lat: 31.1070, lng: 77.1700, rating: 4.5, beds: 30, specialties: ["Trauma", "Emergency", "Cardiology", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat", "ECHS", "HIMCARE"], verified: true, level: "Level I Trauma", phone: "+91-177-2804251" },
+  { name: "Kamla Nehru Hospital Shimla", city: "Shimla", area: "Ridge", lat: 31.1050, lng: 77.1750, rating: 4.3, beds: 16, specialties: ["Gynecology", "Pediatrics", "Emergency", "Internal Medicine"], insurance: ["Ayushman Bharat", "HIMCARE"], verified: true, level: "District Hospital", phone: "+91-177-2651149" },
+
+  // Shillong
+  { name: "NEIGRIHMS", city: "Shillong", area: "Mawdiangdiang", lat: 25.5700, lng: 91.8800, rating: 4.6, beds: 25, specialties: ["Trauma", "Cardiology", "Neurology", "Oncology"], insurance: ["CGHS", "ECHS", "Ayushman Bharat"], verified: true, level: "Super Speciality", phone: "+91-364-2538013" },
+  { name: "Civil Hospital Shillong", city: "Shillong", area: "Laitumkhrah", lat: 25.5750, lng: 91.8900, rating: 4.2, beds: 18, specialties: ["Emergency", "General Surgery", "Internal Medicine", "Pediatrics"], insurance: ["Ayushman Bharat", "Megha Health Insurance Scheme"], verified: true, level: "District Hospital", phone: "+91-364-2224216" },
+
+  // Gangtok
+  { name: "STNM Hospital", city: "Gangtok", area: "Socheygang", lat: 27.3400, lng: 88.6100, rating: 4.3, beds: 18, specialties: ["Emergency", "General Surgery", "Internal Medicine", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat"], verified: true, level: "District Hospital", phone: "+91-3592-202053" },
+  { name: "CRH Hospital Manipal", city: "Gangtok", area: "Tadong", lat: 27.3300, lng: 88.6000, rating: 4.4, beds: 14, specialties: ["Cardiology", "Orthopedics", "Nephrology", "Emergency"], insurance: ["Star Health", "Ayushman Bharat"], verified: true, level: "Multi Speciality", phone: "+91-3592-270425" },
+
+  // Imphal
+  { name: "RIMS Imphal", city: "Imphal", area: "Lamphelpat", lat: 24.8100, lng: 93.9400, rating: 4.4, beds: 25, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "ECHS", "CMHT"], verified: true, level: "Level I Trauma", phone: "+91-385-2414615" },
+  { name: "JNIMS Imphal", city: "Imphal", area: "Porompat", lat: 24.8200, lng: 93.9500, rating: 4.3, beds: 18, specialties: ["Cardiology", "Orthopedics", "Neurology", "Pediatrics"], insurance: ["Ayushman Bharat", "CMHT"], verified: true, level: "Multi Speciality", phone: "+91-385-2445812" },
+
+  // Dibrugarh
+  { name: "Assam Medical College Hospital", city: "Dibrugarh", area: "Barbari", lat: 27.4700, lng: 94.9100, rating: 4.3, beds: 30, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-373-2300080" },
+  { name: "Sanjeevani Hospital", city: "Dibrugarh", area: "Mohanbari", lat: 27.4800, lng: 94.9200, rating: 4.2, beds: 12, specialties: ["Cardiology", "Orthopedics", "Gastroenterology"], insurance: ["Star Health", "Ayushman Bharat"], verified: true, level: "Multi Speciality", phone: "+91-373-2310567" },
+
+  // Agartala
+  { name: "GBP Hospital", city: "Agartala", area: "Old Motorstand", lat: 23.8300, lng: 91.2800, rating: 4.2, beds: 25, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-381-2326262" },
+  { name: "Agartala Government Medical College", city: "Agartala", area: "Kunjaban", lat: 23.8400, lng: 91.2900, rating: 4.3, beds: 20, specialties: ["Cardiology", "Orthopedics", "Pediatrics", "General Surgery"], insurance: ["Ayushman Bharat", "ECHS"], verified: true, level: "Multi Speciality", phone: "+91-381-2341003" },
+
+  // Aizawl
+  { name: "Civil Hospital Aizawl", city: "Aizawl", area: "Dawrpui", lat: 23.7300, lng: 92.7200, rating: 4.2, beds: 20, specialties: ["Emergency", "General Surgery", "Internal Medicine", "Pediatrics"], insurance: ["Ayushman Bharat", "MHIS"], verified: true, level: "District Hospital", phone: "+91-389-2322230" },
+  { name: "Zoram Medical College", city: "Aizawl", area: "Falkawn", lat: 23.7100, lng: 92.7100, rating: 4.3, beds: 16, specialties: ["Trauma", "Cardiology", "Orthopedics", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "MHIS"], verified: true, level: "Multi Speciality", phone: "+91-389-2348210" },
+
+  // ========== SMALL TOWNS / RURAL ==========
+
+  // Vellore
+  { name: "Christian Medical College Vellore", city: "Vellore", area: "Ida Scudder Road", lat: 12.9249, lng: 79.1325, rating: 4.9, beds: 50, specialties: ["Cardiology", "Neurology", "Oncology", "Nephrology", "Transplant"], insurance: ["CGHS", "Ayushman Bharat", "Star Health", "New India Assurance"], verified: true, level: "Multi Speciality", phone: "+91-416-2281000" },
+  { name: "Government Vellore Medical College Hospital", city: "Vellore", area: "Adukamparai", lat: 12.9300, lng: 79.1400, rating: 4.2, beds: 25, specialties: ["Trauma", "Emergency", "General Surgery", "Orthopedics"], insurance: ["Ayushman Bharat", "CMCHIS"], verified: true, level: "District Hospital", phone: "+91-416-2263311" },
+
+  // Kalyani
+  { name: "ICARE Institute of Medical Sciences", city: "Kalyani", area: "Kalyani Township", lat: 22.9750, lng: 88.4350, rating: 4.3, beds: 18, specialties: ["Cardiology", "Orthopedics", "Gastroenterology", "Nephrology"], insurance: ["Star Health", "Swasthya Sathi", "HDFC Ergo"], verified: true, level: "Multi Speciality", phone: "+91-33-25820200" },
+  { name: "Kalyani JNM Hospital", city: "Kalyani", area: "JNM Campus", lat: 22.9800, lng: 88.4300, rating: 4.1, beds: 14, specialties: ["Emergency", "General Surgery", "Internal Medicine"], insurance: ["Ayushman Bharat", "Swasthya Sathi"], verified: true, level: "District Hospital", phone: "+91-33-25828282" },
+
+  // Wardha
+  { name: "Mahatma Gandhi Institute of Medical Sciences", city: "Wardha", area: "Sevagram", lat: 20.7500, lng: 78.6400, rating: 4.5, beds: 20, specialties: ["Emergency", "Internal Medicine", "Orthopedics", "Pediatrics"], insurance: ["Ayushman Bharat", "Mahatma Phule Jan Arogya"], verified: true, level: "Multi Speciality", phone: "+91-7152-284341" },
+  { name: "Datta Meghe Institute of Medical Sciences", city: "Wardha", area: "Sawangi", lat: 20.7400, lng: 78.5900, rating: 4.4, beds: 18, specialties: ["Cardiology", "Orthopedics", "Nephrology", "Gastroenterology"], insurance: ["Star Health", "Ayushman Bharat", "HDFC Ergo"], verified: true, level: "Multi Speciality", phone: "+91-7152-287701" },
+
+  // Manipal (Karnataka)
+  { name: "Kasturba Medical College Hospital", city: "Manipal", area: "Madhav Nagar", lat: 13.3520, lng: 74.7920, rating: 4.8, beds: 35, specialties: ["Cardiology", "Neurosciences", "Oncology", "Transplant", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat", "Star Health", "Arogya Karnataka"], verified: true, level: "Multi Speciality", phone: "+91-820-2922424" },
+
+  // Rishikesh
+  { name: "AIIMS Rishikesh", city: "Rishikesh", area: "Virbhadra Road", lat: 30.0869, lng: 78.2676, rating: 4.8, beds: 40, specialties: ["Trauma", "Cardiology", "Neurology", "Oncology", "Orthopedics"], insurance: ["CGHS", "ECHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-135-2462930" },
+
+  // Raebareli
+  { name: "District Hospital Raebareli", city: "Raebareli", area: "Civil Lines", lat: 26.2300, lng: 81.2300, rating: 3.9, beds: 15, specialties: ["Emergency", "General Surgery", "Internal Medicine", "Pediatrics"], insurance: ["Ayushman Bharat"], verified: true, level: "District Hospital", phone: "+91-535-2210248" },
+
+  // Bhagalpur
+  { name: "JLNMCH Bhagalpur", city: "Bhagalpur", area: "Mayaganj", lat: 25.2400, lng: 86.9800, rating: 4.1, beds: 25, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-641-2400580" },
+
+  // Darbhanga
+  { name: "DMCH Darbhanga", city: "Darbhanga", area: "Laheriasarai", lat: 26.1500, lng: 85.8900, rating: 4.1, beds: 30, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-6272-222251" },
+
+  // Siwan
+  { name: "Sadar Hospital Siwan", city: "Siwan", area: "Mahatma Gandhi Road", lat: 26.2200, lng: 84.3600, rating: 3.8, beds: 12, specialties: ["Emergency", "General Surgery", "Internal Medicine"], insurance: ["Ayushman Bharat"], verified: true, level: "District Hospital", phone: "+91-6154-222345" },
+
+  // Tezpur
+  { name: "Kanaklata Civil Hospital", city: "Tezpur", area: "Mission Chariali", lat: 26.6300, lng: 92.7900, rating: 4.0, beds: 18, specialties: ["Emergency", "General Surgery", "Internal Medicine", "Orthopedics"], insurance: ["Ayushman Bharat", "Atal Amrit Abhiyan"], verified: true, level: "District Hospital", phone: "+91-3712-255100" },
+
+  // Jorhat
+  { name: "Jorhat Medical College Hospital", city: "Jorhat", area: "Kushal Konwar Path", lat: 26.7500, lng: 94.2000, rating: 4.2, beds: 22, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Atal Amrit Abhiyan"], verified: true, level: "Level I Trauma", phone: "+91-376-2321178" },
+
+  // Muzaffarpur
+  { name: "SKMCH Muzaffarpur", city: "Muzaffarpur", area: "Kazi Muhammadpur", lat: 26.1200, lng: 85.3600, rating: 4.1, beds: 30, specialties: ["Trauma", "Emergency", "Pediatrics", "General Surgery"], insurance: ["CGHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-621-2240250" },
+
+  // Jhansi
+  { name: "MLB Medical College", city: "Jhansi", area: "Jhansi Fort Road", lat: 25.4500, lng: 78.5700, rating: 4.2, beds: 25, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-510-2320202" },
+
+  // Dharwad
+  { name: "SDM College of Medical Sciences", city: "Dharwad", area: "Sattur", lat: 15.4600, lng: 75.0100, rating: 4.4, beds: 22, specialties: ["Cardiology", "Orthopedics", "Pediatrics", "General Surgery"], insurance: ["Ayushman Bharat", "Arogya Karnataka", "Star Health"], verified: true, level: "Multi Speciality", phone: "+91-836-2462692" },
+
+  // Raichur
+  { name: "RIMS Raichur", city: "Raichur", area: "Hyderabad Road", lat: 16.2100, lng: 77.3500, rating: 4.1, beds: 20, specialties: ["Trauma", "Emergency", "General Surgery", "Pediatrics"], insurance: ["CGHS", "Ayushman Bharat", "Arogya Karnataka"], verified: true, level: "District Hospital", phone: "+91-8532-226422" },
+
+  // Karimnagar
+  { name: "Government General Hospital Karimnagar", city: "Karimnagar", area: "Jagtial Road", lat: 18.4400, lng: 79.1300, rating: 4.1, beds: 20, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["Ayushman Bharat", "Aarogyasri"], verified: true, level: "District Hospital", phone: "+91-878-2228755" },
+
+  // Warangal
+  { name: "MGM Hospital Warangal", city: "Warangal", area: "Chintal Basthi", lat: 17.9800, lng: 79.5900, rating: 4.3, beds: 30, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Aarogyasri"], verified: true, level: "Level I Trauma", phone: "+91-870-2461700" },
+
+  // Tirunelveli
+  { name: "Tirunelveli Medical College Hospital", city: "Tirunelveli", area: "High Ground", lat: 8.7100, lng: 77.7500, rating: 4.3, beds: 30, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "CMCHIS"], verified: true, level: "Level I Trauma", phone: "+91-462-2572736" },
+
+  // Salem
+  { name: "Government Mohan Kumaramangalam Medical College", city: "Salem", area: "Meyanur", lat: 11.6700, lng: 78.1500, rating: 4.2, beds: 30, specialties: ["Trauma", "Emergency", "General Surgery", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat", "CMCHIS"], verified: true, level: "Level I Trauma", phone: "+91-427-2311574" },
+  { name: "SKS Hospital", city: "Salem", area: "Fairlands", lat: 11.6600, lng: 78.1400, rating: 4.4, beds: 14, specialties: ["Cardiology", "Orthopedics", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "CMCHIS"], verified: true, level: "Multi Speciality", phone: "+91-427-2444444" },
+
+  // Thanjavur
+  { name: "Thanjavur Medical College Hospital", city: "Thanjavur", area: "Medical College Road", lat: 10.7900, lng: 79.1400, rating: 4.3, beds: 30, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "CMCHIS"], verified: true, level: "Level I Trauma", phone: "+91-4362-231791" },
+
+  // Bareilly
+  { name: "Government Medical College Bareilly", city: "Bareilly", area: "Civil Lines", lat: 28.3700, lng: 79.4300, rating: 4.1, beds: 25, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat"], verified: true, level: "Level I Trauma", phone: "+91-581-2510390" },
+
+  // Aligarh
+  { name: "JNMC - AMU Aligarh", city: "Aligarh", area: "AMU Campus", lat: 27.9100, lng: 78.0800, rating: 4.5, beds: 35, specialties: ["Trauma", "Cardiology", "Neurology", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-571-2720382" },
+
+  // Bilaspur
+  { name: "CIMS Bilaspur", city: "Bilaspur", area: "Koni", lat: 22.0800, lng: 82.1400, rating: 4.2, beds: 20, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat"], verified: true, level: "Multi Speciality", phone: "+91-7752-260230" },
+
+  // Korba
+  { name: "District Hospital Korba", city: "Korba", area: "Medical College Road", lat: 22.3600, lng: 82.7500, rating: 3.9, beds: 12, specialties: ["Emergency", "General Surgery", "Internal Medicine"], insurance: ["Ayushman Bharat"], verified: true, level: "District Hospital", phone: "+91-7759-243033" },
+
+  // Hazaribagh
+  { name: "Hazaribagh Medical College Hospital", city: "Hazaribagh", area: "Dariyabad", lat: 23.9900, lng: 85.3600, rating: 4.0, beds: 18, specialties: ["Emergency", "General Surgery", "Internal Medicine", "Orthopedics"], insurance: ["CGHS", "Ayushman Bharat"], verified: true, level: "District Hospital", phone: "+91-6546-262250" },
+
+  // Dhanbad
+  { name: "PMCH Dhanbad", city: "Dhanbad", area: "Hirapur", lat: 23.7900, lng: 86.4300, rating: 4.2, beds: 25, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "ECHS"], verified: true, level: "Level I Trauma", phone: "+91-326-2203900" },
+
+  // Purulia
+  { name: "Purulia Government Medical College Hospital", city: "Purulia", area: "Court Compound", lat: 23.3300, lng: 86.3650, rating: 4.0, beds: 15, specialties: ["Emergency", "General Surgery", "Internal Medicine", "Pediatrics"], insurance: ["Ayushman Bharat", "Swasthya Sathi"], verified: true, level: "District Hospital", phone: "+91-3252-222221" },
+
+  // Bankura
+  { name: "Bankura Sammilani Medical College", city: "Bankura", area: "Lokepur", lat: 23.2400, lng: 87.0700, rating: 4.1, beds: 20, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Swasthya Sathi"], verified: true, level: "Level I Trauma", phone: "+91-3242-251076" },
+
+  // Medinipur
+  { name: "Midnapore Medical College", city: "Medinipur", area: "Vidyasagar Road", lat: 22.4200, lng: 87.3200, rating: 4.2, beds: 22, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Swasthya Sathi"], verified: true, level: "Level I Trauma", phone: "+91-3222-275368" },
+
+  // Burdwan
+  { name: "Burdwan Medical College", city: "Burdwan", area: "Baburbag", lat: 23.2300, lng: 87.8600, rating: 4.2, beds: 25, specialties: ["Trauma", "Emergency", "General Surgery", "Internal Medicine"], insurance: ["CGHS", "Ayushman Bharat", "Swasthya Sathi"], verified: true, level: "Level I Trauma", phone: "+91-342-2564453" },
+
+  // Malda
+  { name: "Malda Medical College Hospital", city: "Malda", area: "English Bazar", lat: 25.0100, lng: 88.1400, rating: 4.0, beds: 18, specialties: ["Emergency", "General Surgery", "Internal Medicine", "Pediatrics"], insurance: ["Ayushman Bharat", "Swasthya Sathi"], verified: true, level: "District Hospital", phone: "+91-3512-253160" },
+
+  // Asansol
+  { name: "Asansol District Hospital", city: "Asansol", area: "GT Road", lat: 23.6900, lng: 86.9700, rating: 4.1, beds: 20, specialties: ["Emergency", "General Surgery", "Internal Medicine", "Orthopedics"], insurance: ["Ayushman Bharat", "Swasthya Sathi"], verified: true, level: "District Hospital", phone: "+91-341-2253600" },
+  { name: "The Mission Hospital Durgapur", city: "Durgapur", area: "Bidhannagar", lat: 23.5200, lng: 87.3100, rating: 4.4, beds: 18, specialties: ["Cardiology", "Orthopedics", "Neurosciences", "Gastroenterology"], insurance: ["Star Health", "HDFC Ergo", "Swasthya Sathi"], verified: true, level: "Multi Speciality", phone: "+91-343-2564222" },
 ];
 
 export const cities = [
+  // Metro
   { name: "Delhi", lat: 28.6139, lng: 77.2090 },
   { name: "Mumbai", lat: 19.0760, lng: 72.8777 },
   { name: "Bangalore", lat: 12.9716, lng: 77.5946 },
@@ -136,6 +371,72 @@ export const cities = [
   { name: "Indore", lat: 22.7196, lng: 75.8577 },
   { name: "Coimbatore", lat: 11.0168, lng: 76.9558 },
   { name: "Visakhapatnam", lat: 17.6868, lng: 83.2185 },
+  // Tier-2
+  { name: "Nagpur", lat: 21.1458, lng: 79.0882 },
+  { name: "Varanasi", lat: 25.3176, lng: 82.9739 },
+  { name: "Agra", lat: 27.1767, lng: 78.0081 },
+  { name: "Madurai", lat: 9.9252, lng: 78.1198 },
+  { name: "Ranchi", lat: 23.3441, lng: 85.3096 },
+  { name: "Raipur", lat: 21.2514, lng: 81.6296 },
+  { name: "Dehradun", lat: 30.3165, lng: 78.0322 },
+  { name: "Mysore", lat: 12.2958, lng: 76.6394 },
+  { name: "Jodhpur", lat: 26.2389, lng: 73.0243 },
+  { name: "Udaipur", lat: 24.5854, lng: 73.7125 },
+  { name: "Allahabad", lat: 25.4358, lng: 81.8463 },
+  { name: "Tiruchirappalli", lat: 10.7905, lng: 78.7047 },
+  { name: "Jalandhar", lat: 31.3260, lng: 75.5762 },
+  { name: "Mangalore", lat: 12.9141, lng: 74.8560 },
+  { name: "Siliguri", lat: 26.7271, lng: 88.3953 },
+  { name: "Hubli", lat: 15.3647, lng: 75.1240 },
+  { name: "Gorakhpur", lat: 26.7606, lng: 83.3732 },
+  { name: "Cuttack", lat: 20.4625, lng: 85.8830 },
+  { name: "Jammu", lat: 32.7266, lng: 74.8570 },
+  { name: "Aurangabad", lat: 19.8762, lng: 75.3433 },
+  { name: "Amritsar", lat: 31.6340, lng: 74.8723 },
+  { name: "Vijayawada", lat: 16.5062, lng: 80.6480 },
+  { name: "Nashik", lat: 19.9975, lng: 73.7898 },
+  { name: "Nellore", lat: 14.4426, lng: 79.9865 },
+  { name: "Shimla", lat: 31.1048, lng: 77.1734 },
+  { name: "Shillong", lat: 25.5788, lng: 91.8933 },
+  { name: "Gangtok", lat: 27.3389, lng: 88.6065 },
+  { name: "Imphal", lat: 24.8170, lng: 93.9368 },
+  { name: "Dibrugarh", lat: 27.4728, lng: 94.9120 },
+  { name: "Agartala", lat: 23.8315, lng: 91.2868 },
+  { name: "Aizawl", lat: 23.7271, lng: 92.7176 },
+  // Small towns / Rural
+  { name: "Vellore", lat: 12.9165, lng: 79.1325 },
+  { name: "Kalyani", lat: 22.9751, lng: 88.4345 },
+  { name: "Wardha", lat: 20.7453, lng: 78.6022 },
+  { name: "Manipal", lat: 13.3525, lng: 74.7928 },
+  { name: "Rishikesh", lat: 30.0869, lng: 78.2676 },
+  { name: "Raebareli", lat: 26.2314, lng: 81.2331 },
+  { name: "Bhagalpur", lat: 25.2425, lng: 86.9842 },
+  { name: "Darbhanga", lat: 26.1542, lng: 85.8918 },
+  { name: "Siwan", lat: 26.2218, lng: 84.3592 },
+  { name: "Tezpur", lat: 26.6338, lng: 92.7926 },
+  { name: "Jorhat", lat: 26.7509, lng: 94.2037 },
+  { name: "Muzaffarpur", lat: 26.1209, lng: 85.3647 },
+  { name: "Jhansi", lat: 25.4484, lng: 78.5685 },
+  { name: "Dharwad", lat: 15.4589, lng: 75.0078 },
+  { name: "Raichur", lat: 16.2076, lng: 77.3463 },
+  { name: "Karimnagar", lat: 18.4386, lng: 79.1288 },
+  { name: "Warangal", lat: 17.9784, lng: 79.5941 },
+  { name: "Tirunelveli", lat: 8.7139, lng: 77.7567 },
+  { name: "Salem", lat: 11.6643, lng: 78.1460 },
+  { name: "Thanjavur", lat: 10.7870, lng: 79.1378 },
+  { name: "Bareilly", lat: 28.3670, lng: 79.4304 },
+  { name: "Aligarh", lat: 27.8974, lng: 78.0880 },
+  { name: "Bilaspur", lat: 22.0797, lng: 82.1409 },
+  { name: "Korba", lat: 22.3595, lng: 82.7501 },
+  { name: "Hazaribagh", lat: 23.9921, lng: 85.3637 },
+  { name: "Dhanbad", lat: 23.7957, lng: 86.4304 },
+  { name: "Purulia", lat: 23.3321, lng: 86.3652 },
+  { name: "Bankura", lat: 23.2324, lng: 87.0649 },
+  { name: "Medinipur", lat: 22.4249, lng: 87.3199 },
+  { name: "Burdwan", lat: 23.2324, lng: 87.8615 },
+  { name: "Malda", lat: 25.0108, lng: 88.1411 },
+  { name: "Asansol", lat: 23.6889, lng: 86.9661 },
+  { name: "Durgapur", lat: 23.5204, lng: 87.3119 },
 ];
 
 export function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
