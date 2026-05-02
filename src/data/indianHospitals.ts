@@ -13,6 +13,14 @@ export interface Hospital {
   phone: string;
 }
 
+export type CityTier = "Metro" | "Semi-Urban" | "Rural";
+export interface CityEntry {
+  name: string;
+  lat: number;
+  lng: number;
+  tier: CityTier;
+}
+
 export const indianHospitals: Hospital[] = [
   // ========== METRO CITIES ==========
 
