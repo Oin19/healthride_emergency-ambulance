@@ -1,18 +1,31 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Building2, Shield, BedDouble, MapPin, Star, Clock, ChevronRight, Search, Filter, Navigation, Phone } from "lucide-react";
+import { Building2, Shield, BedDouble, MapPin, Star, Clock, ChevronRight, Search, Filter, Navigation, Phone, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { indianHospitals, cities, getDistance, type Hospital } from "@/data/indianHospitals";
+import { indianHospitals, cities, getDistance, getHospitalTier, type Hospital, type CityTier } from "@/data/indianHospitals";
 
 const insuranceProviders = ["All", "Star Health", "HDFC Ergo", "ICICI Lombard", "Bajaj Allianz", "Ayushman Bharat", "CGHS", "New India Assurance"];
+const tierOptions: { label: string; value: CityTier | "All" }[] = [
+  { label: "All Tiers", value: "All" },
+  { label: "Metro", value: "Metro" },
+  { label: "Semi-Urban", value: "Semi-Urban" },
+  { label: "Rural", value: "Rural" },
+];
+
+const tierBadgeStyle: Record<CityTier, string> = {
+  Metro: "bg-primary/10 text-primary border-primary/30",
+  "Semi-Urban": "bg-accent/10 text-accent border-accent/30",
+  Rural: "bg-success/10 text-success border-success/30",
+};
 
 const HospitalFinderSection = () => {
   const [locationInput, setLocationInput] = useState("");
   const [selectedCity, setSelectedCity] = useState<{ name: string; lat: number; lng: number } | null>(null);
   const [specialtySearch, setSpecialtySearch] = useState("");
   const [selectedInsurance, setSelectedInsurance] = useState<string | null>(null);
+  const [selectedTier, setSelectedTier] = useState<CityTier | "All">("All");
   const [showCitySuggestions, setShowCitySuggestions] = useState(false);
 
   const citySuggestions = useMemo(() => {
@@ -48,7 +61,7 @@ const HospitalFinderSection = () => {
       .map((h) => {
         const distKm = getDistance(selectedCity.lat, selectedCity.lng, h.lat, h.lng);
         const etaMin = Math.round(distKm * 2.5 + 3); // rough ETA estimate
-        return { ...h, distKm: Math.round(distKm * 10) / 10, etaMin };
+        return { ...h, distKm: Math.round(distKm * 10) / 10, etaMin, tier: getHospitalTier(h) };
       })
       .filter((h) => h.distKm < 80) // within 80km
       .sort((a, b) => a.distKm - b.distKm);
@@ -61,9 +74,10 @@ const HospitalFinderSection = () => {
         h.specialties.some((s) => s.toLowerCase().includes(specialtySearch.toLowerCase()));
       const matchesInsurance = !selectedInsurance || selectedInsurance === "All" ||
         h.insurance.some((i) => i.includes(selectedInsurance!));
-      return matchesSpecialty && matchesInsurance;
+      const matchesTier = selectedTier === "All" || h.tier === selectedTier;
+      return matchesSpecialty && matchesInsurance && matchesTier;
     });
-  }, [enrichedHospitals, specialtySearch, selectedInsurance]);
+  }, [enrichedHospitals, specialtySearch, selectedInsurance, selectedTier]);
 
   return (
     <section id="hospitals" className="py-24 bg-secondary/30">
