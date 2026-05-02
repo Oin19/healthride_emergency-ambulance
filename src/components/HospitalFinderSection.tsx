@@ -165,6 +165,23 @@ const HospitalFinderSection = () => {
                 </button>
               ))}
             </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Layers className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground mr-1">Tier:</span>
+              {tierOptions.map((t) => (
+                <button
+                  key={t.value}
+                  onClick={() => setSelectedTier(t.value)}
+                  className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                    selectedTier === t.value
+                      ? "bg-foreground text-background border-foreground"
+                      : "bg-card text-muted-foreground border-border hover:border-foreground/30"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
           </motion.div>
         )}
 
@@ -189,6 +206,7 @@ const HospitalFinderSection = () => {
                       {hospital.verified && (
                         <Badge className="bg-success/10 text-success border-success/30 text-[10px] px-1.5 py-0">Verified</Badge>
                       )}
+                      <Badge className={`${tierBadgeStyle[hospital.tier]} text-[10px] px-1.5 py-0`}>{hospital.tier}</Badge>
                     </div>
 
                     <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3 flex-wrap">
