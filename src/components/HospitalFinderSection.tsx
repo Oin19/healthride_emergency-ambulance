@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Building2, Shield, BedDouble, MapPin, Star, Clock, ChevronRight, Search, Filter, Navigation, Phone, Layers } from "lucide-react";
+import { Building2, Shield, BedDouble, MapPin, Star, Clock, ChevronRight, Search, Filter, Navigation, Phone, Layers, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -20,12 +20,22 @@ const tierBadgeStyle: Record<CityTier, string> = {
   Rural: "bg-success/10 text-success border-success/30",
 };
 
+const tierRank: Record<CityTier, number> = { Metro: 0, "Semi-Urban": 1, Rural: 2 };
+type SortKey = "distance" | "tier-asc" | "tier-desc" | "rating";
+const sortOptions: { label: string; value: SortKey }[] = [
+  { label: "Nearest", value: "distance" },
+  { label: "Tier: Metro → Rural", value: "tier-asc" },
+  { label: "Tier: Rural → Metro", value: "tier-desc" },
+  { label: "Top Rated", value: "rating" },
+];
+
 const HospitalFinderSection = () => {
   const [locationInput, setLocationInput] = useState("");
   const [selectedCity, setSelectedCity] = useState<{ name: string; lat: number; lng: number } | null>(null);
   const [specialtySearch, setSpecialtySearch] = useState("");
   const [selectedInsurance, setSelectedInsurance] = useState<string | null>(null);
   const [selectedTier, setSelectedTier] = useState<CityTier | "All">("All");
+  const [sortBy, setSortBy] = useState<SortKey>("distance");
   const [showCitySuggestions, setShowCitySuggestions] = useState(false);
 
   const citySuggestions = useMemo(() => {
@@ -68,7 +78,7 @@ const HospitalFinderSection = () => {
   }, [selectedCity]);
 
   const filtered = useMemo(() => {
-    return enrichedHospitals.filter((h) => {
+    const list = enrichedHospitals.filter((h) => {
       const matchesSpecialty = !specialtySearch.trim() ||
         h.name.toLowerCase().includes(specialtySearch.toLowerCase()) ||
         h.specialties.some((s) => s.toLowerCase().includes(specialtySearch.toLowerCase()));
@@ -77,7 +87,22 @@ const HospitalFinderSection = () => {
       const matchesTier = selectedTier === "All" || h.tier === selectedTier;
       return matchesSpecialty && matchesInsurance && matchesTier;
     });
-  }, [enrichedHospitals, specialtySearch, selectedInsurance, selectedTier]);
+    const sorted = [...list];
+    sorted.sort((a, b) => {
+      switch (sortBy) {
+        case "tier-asc":
+          return tierRank[a.tier] - tierRank[b.tier] || a.distKm - b.distKm;
+        case "tier-desc":
+          return tierRank[b.tier] - tierRank[a.tier] || a.distKm - b.distKm;
+        case "rating":
+          return b.rating - a.rating || a.distKm - b.distKm;
+        case "distance":
+        default:
+          return a.distKm - b.distKm;
+      }
+    });
+    return sorted;
+  }, [enrichedHospitals, specialtySearch, selectedInsurance, selectedTier, sortBy]);
 
   return (
     <section id="hospitals" className="py-24 bg-secondary/30">
@@ -179,6 +204,23 @@ const HospitalFinderSection = () => {
                   }`}
                 >
                   {t.label}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground mr-1">Sort by:</span>
+              {sortOptions.map((o) => (
+                <button
+                  key={o.value}
+                  onClick={() => setSortBy(o.value)}
+                  className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                    sortBy === o.value
+                      ? "bg-foreground text-background border-foreground"
+                      : "bg-card text-muted-foreground border-border hover:border-foreground/30"
+                  }`}
+                >
+                  {o.label}
                 </button>
               ))}
             </div>
