@@ -12,6 +12,7 @@ import { Loader2, ArrowLeft, User, Truck, Building2 } from "lucide-react";
 import healthrideLogo from "@/assets/healthride-logo.png";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { Helmet } from "react-helmet-async";
 
 type UserRole = "patient" | "driver" | "hospital";
 
@@ -258,6 +259,15 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 relative">
+      <Helmet>
+        <title>Sign In or Register — HealthRide</title>
+        <meta name="description" content="Sign in to HealthRide or register as a patient, ambulance driver, or hospital partner to access AI-powered ambulance dispatch." />
+        <link rel="canonical" href="https://healthride-oin.lovable.app/auth" />
+        <meta property="og:title" content="Sign In or Register — HealthRide" />
+        <meta property="og:description" content="Sign in to HealthRide or register as a patient, ambulance driver, or hospital partner." />
+        <meta property="og:url" content="https://healthride-oin.lovable.app/auth" />
+      </Helmet>
+      <h1 className="sr-only">Sign in or register for HealthRide</h1>
       <button
         onClick={() => navigate("/")}
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"

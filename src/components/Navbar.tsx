@@ -31,7 +31,7 @@ const Navbar = () => {
         <div className="container mx-auto flex items-center justify-between h-16 px-4">
           <div className="flex items-center gap-2">
             {!isHome && (
-              <button onClick={() => { if (window.history.length > 1) { navigate(-1); } else { navigate("/"); } }} className="mr-1 p-1.5 rounded-lg hover:bg-muted transition-colors text-foreground">
+              <button aria-label="Go back" onClick={() => { if (window.history.length > 1) { navigate(-1); } else { navigate("/"); } }} className="mr-1 p-1.5 rounded-lg hover:bg-muted transition-colors text-foreground">
                 <ArrowLeft className="w-5 h-5" />
               </button>
             )}
@@ -61,7 +61,7 @@ const Navbar = () => {
             </Button>
           </div>
 
-          <button className="md:hidden text-foreground" onClick={() => setOpen(!open)}>
+          <button aria-label="Toggle menu" aria-expanded={open} className="md:hidden text-foreground" onClick={() => setOpen(!open)}>
             {open ? <X /> : <Menu />}
           </button>
         </div>

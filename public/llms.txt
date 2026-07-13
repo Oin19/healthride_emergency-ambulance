@@ -1,0 +1,17 @@
+# HealthRide
+
+> AI-powered emergency ambulance dispatch and non-emergency medical transport across 80+ Indian cities, with live GPS tracking and insurance pre-authorization (Ayushman Bharat, CGHS, ESI, Swasthya Sathi, private insurers).
+
+HealthRide connects patients to the nearest ambulance using AI, tracks it live, and coordinates with insurance-aware hospitals so admission and billing are handled before arrival.
+
+## Pages
+
+- [Home](/): Overview of AI dispatch, live tracking, hospital finder, and how HealthRide works.
+- [Ambulance Insurance & Medicare Coverage Guide](/billing-guide): How ambulance billing, insurance, and Medicare coverage work — and how AI pre-authorization simplifies emergency transport.
+- [Sign In or Register](/auth): Patient, driver, and hospital sign-up.
+- [Privacy Policy](/privacy): How patient, location, and medical data is collected, used, and protected.
+- [Terms of Service](/terms): Terms governing use of the HealthRide dispatch platform.
+
+## Optional
+
+- Contact: banerjeeoindrila40@gmail.com, +91 9330865494 — Kolkata, West Bengal, India.
