@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      ambulance_request_audit_log: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          changed_fields: Json | null
+          created_at: string
+          id: string
+          new_driver_id: string | null
+          new_row: Json | null
+          new_status: string | null
+          old_driver_id: string | null
+          old_row: Json | null
+          old_status: string | null
+          request_id: string
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          changed_fields?: Json | null
+          created_at?: string
+          id?: string
+          new_driver_id?: string | null
+          new_row?: Json | null
+          new_status?: string | null
+          old_driver_id?: string | null
+          old_row?: Json | null
+          old_status?: string | null
+          request_id: string
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          changed_fields?: Json | null
+          created_at?: string
+          id?: string
+          new_driver_id?: string | null
+          new_row?: Json | null
+          new_status?: string | null
+          old_driver_id?: string | null
+          old_row?: Json | null
+          old_status?: string | null
+          request_id?: string
+        }
+        Relationships: []
+      }
       ambulance_requests: {
         Row: {
           city: string
