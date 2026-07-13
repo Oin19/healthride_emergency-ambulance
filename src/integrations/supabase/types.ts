@@ -395,7 +395,36 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      dispatch_queue: {
+        Row: {
+          city: string | null
+          created_at: string | null
+          emergency_type: string | null
+          id: string | null
+          patient_lat: number | null
+          patient_lng: number | null
+          status: string | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string | null
+          emergency_type?: string | null
+          id?: string | null
+          patient_lat?: number | null
+          patient_lng?: number | null
+          status?: string | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string | null
+          emergency_type?: string | null
+          id?: string | null
+          patient_lat?: number | null
+          patient_lng?: number | null
+          status?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {

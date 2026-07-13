@@ -40,13 +40,24 @@ interface AmbulanceRequest {
   created_at: string;
 }
 
+// Limited row shape returned from the dispatch_queue view — no patient PII.
+interface DispatchQueueEntry {
+  id: string;
+  city: string;
+  emergency_type: string;
+  patient_lat: number;
+  patient_lng: number;
+  created_at: string;
+  status: string;
+}
+
 const DriverDashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [profile, setProfile] = useState<DriverProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [pendingRequests, setPendingRequests] = useState<AmbulanceRequest[]>([]);
+  const [pendingRequests, setPendingRequests] = useState<DispatchQueueEntry[]>([]);
   const [activeRequest, setActiveRequest] = useState<AmbulanceRequest | null>(null);
   const [accepting, setAccepting] = useState(false);
   const watchIdRef = useRef<number | null>(null);
@@ -112,17 +123,18 @@ const DriverDashboard = () => {
   useEffect(() => {
     if (!profile) return;
 
-    // Initial fetch
+    // Initial fetch from the safe dispatch_queue view (no patient PII exposed).
     const fetchPending = async () => {
       const { data } = await supabase
-        .from("ambulance_requests")
-        .select("*")
-        .eq("status", "pending")
+        .from("dispatch_queue")
+        .select("id, city, emergency_type, patient_lat, patient_lng, created_at, status")
         .eq("city", profile.city)
         .order("created_at", { ascending: false });
-      if (data) setPendingRequests(data as AmbulanceRequest[]);
+      if (data) setPendingRequests(data as DispatchQueueEntry[]);
     };
     fetchPending();
+    // Poll the queue — RLS no longer streams unclaimed rows to drivers via realtime.
+    const pendingInterval = setInterval(fetchPending, 5000);
 
     // Fetch active request (accepted by this driver)
     const fetchActive = async () => {
@@ -136,7 +148,7 @@ const DriverDashboard = () => {
     };
     fetchActive();
 
-    // Realtime subscription
+    // Realtime subscription — only rows the driver is assigned to are delivered now.
     const channel = supabase
       .channel("driver-requests")
       .on("postgres_changes", {
@@ -145,15 +157,6 @@ const DriverDashboard = () => {
         table: "ambulance_requests",
       }, (payload) => {
         const req = payload.new as AmbulanceRequest;
-        if (payload.eventType === "INSERT" && req.status === "pending" && req.city === profile.city) {
-          setPendingRequests((prev) => [req, ...prev]);
-          // Play notification sound
-          try {
-            audioRef.current = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ==");
-            audioRef.current.play().catch(() => {});
-          } catch {}
-          toast({ title: "🚨 New Emergency Request!", description: `${req.emergency_type} in ${req.city}` });
-        }
         if (payload.eventType === "UPDATE") {
           if (req.status !== "pending") {
             setPendingRequests((prev) => prev.filter((r) => r.id !== req.id));
@@ -168,7 +171,7 @@ const DriverDashboard = () => {
       })
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => { supabase.removeChannel(channel); clearInterval(pendingInterval); };
   }, [profile, toast]);
 
   const toggleAvailability = async () => {
@@ -179,7 +182,7 @@ const DriverDashboard = () => {
     toast({ title: newVal ? "You're now online" : "You're now offline" });
   };
 
-  const acceptRequest = async (request: AmbulanceRequest) => {
+  const acceptRequest = async (request: DispatchQueueEntry) => {
     if (!profile) return;
     setAccepting(true);
 
@@ -192,6 +195,7 @@ const DriverDashboard = () => {
     );
     const etaMin = Math.max(3, Math.round(dist / 0.5)); // ~30km/h in city
 
+    // Claim policy allows this only when driver_id IS NULL AND status='pending'.
     const { error } = await supabase
       .from("ambulance_requests")
       .update({
@@ -202,15 +206,29 @@ const DriverDashboard = () => {
         eta_minutes: etaMin,
       })
       .eq("id", request.id)
-      .eq("status", "pending"); // Prevent race condition
+      .is("driver_id", null)
+      .eq("status", "pending");
+
+    if (error) {
+      setAccepting(false);
+      toast({ title: "Could not accept", description: "Request may have been taken.", variant: "destructive" });
+      return;
+    }
+
+    // Full patient details are visible now that the driver is assigned.
+    const { data: full } = await supabase
+      .from("ambulance_requests")
+      .select("*")
+      .eq("id", request.id)
+      .maybeSingle();
 
     setAccepting(false);
-    if (error) {
-      toast({ title: "Could not accept", description: "Request may have been taken.", variant: "destructive" });
-    } else {
-      setActiveRequest({ ...request, status: "accepted" });
+    if (full) {
+      setActiveRequest(full as AmbulanceRequest);
       setPendingRequests((prev) => prev.filter((r) => r.id !== request.id));
       toast({ title: "Request Accepted!", description: `ETA: ${etaMin} minutes` });
+    } else {
+      toast({ title: "Could not accept", description: "Request may have been taken.", variant: "destructive" });
     }
   };
 
@@ -403,9 +421,8 @@ const DriverDashboard = () => {
                       <span className="text-xs text-muted-foreground">{dist.toFixed(1)} km away</span>
                     </div>
                     <div className="text-xs text-muted-foreground space-y-1">
-                      {req.patient_name && <p className="flex items-center gap-1"><User className="w-3 h-3" /> {req.patient_name}</p>}
-                      {req.patient_phone && <p className="flex items-center gap-1"><Phone className="w-3 h-3" /> {req.patient_phone}</p>}
-                      <p className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {req.patient_address || `${req.patient_lat.toFixed(4)}°N, ${req.patient_lng.toFixed(4)}°E`}</p>
+                      <p className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {req.patient_lat.toFixed(4)}°N, {req.patient_lng.toFixed(4)}°E</p>
+                      <p className="italic">Patient contact details will appear after you accept.</p>
                     </div>
                     <Button
                       variant="emergency"
