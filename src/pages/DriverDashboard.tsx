@@ -421,9 +421,8 @@ const DriverDashboard = () => {
                       <span className="text-xs text-muted-foreground">{dist.toFixed(1)} km away</span>
                     </div>
                     <div className="text-xs text-muted-foreground space-y-1">
-                      {req.patient_name && <p className="flex items-center gap-1"><User className="w-3 h-3" /> {req.patient_name}</p>}
-                      {req.patient_phone && <p className="flex items-center gap-1"><Phone className="w-3 h-3" /> {req.patient_phone}</p>}
-                      <p className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {req.patient_address || `${req.patient_lat.toFixed(4)}°N, ${req.patient_lng.toFixed(4)}°E`}</p>
+                      <p className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {req.patient_lat.toFixed(4)}°N, {req.patient_lng.toFixed(4)}°E</p>
+                      <p className="italic">Patient contact details will appear after you accept.</p>
                     </div>
                     <Button
                       variant="emergency"
