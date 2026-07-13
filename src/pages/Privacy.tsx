@@ -1,8 +1,17 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 const Privacy = () => (
   <div className="min-h-screen flex flex-col">
+    <Helmet>
+      <title>Privacy Policy — HealthRide</title>
+      <meta name="description" content="How HealthRide collects, uses, and protects patient, location, medical, and insurance data used for ambulance dispatch." />
+      <link rel="canonical" href="https://healthride-oin.lovable.app/privacy" />
+      <meta property="og:title" content="Privacy Policy — HealthRide" />
+      <meta property="og:description" content="How HealthRide handles patient, location, and medical data." />
+      <meta property="og:url" content="https://healthride-oin.lovable.app/privacy" />
+    </Helmet>
     <Navbar />
     <main className="flex-1 pt-24 pb-16">
       <div className="container mx-auto px-4 max-w-3xl prose prose-neutral dark:prose-invert">

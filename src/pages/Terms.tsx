@@ -1,8 +1,17 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 const Terms = () => (
   <div className="min-h-screen flex flex-col">
+    <Helmet>
+      <title>Terms of Service — HealthRide</title>
+      <meta name="description" content="The terms that govern your use of HealthRide's AI-powered ambulance dispatch and medical transport platform." />
+      <link rel="canonical" href="https://healthride-oin.lovable.app/terms" />
+      <meta property="og:title" content="Terms of Service — HealthRide" />
+      <meta property="og:description" content="Terms governing use of HealthRide's ambulance dispatch platform." />
+      <meta property="og:url" content="https://healthride-oin.lovable.app/terms" />
+    </Helmet>
     <Navbar />
     <main className="flex-1 pt-24 pb-16">
       <div className="container mx-auto px-4 max-w-3xl prose prose-neutral dark:prose-invert">
