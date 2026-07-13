@@ -16,7 +16,15 @@ interface HeroSectionProps {
 const HeroSection = ({ onRequestAmbulance }: HeroSectionProps) => (
   <section className="relative min-h-screen flex items-center overflow-hidden">
     <div className="absolute inset-0">
-      <img src={heroBg} alt="" className="w-full h-full object-cover" />
+      <img
+        src={heroBg}
+        alt=""
+        className="w-full h-full object-cover"
+        width={1920}
+        height={1080}
+        fetchPriority="high"
+        decoding="async"
+      />
       <div className="absolute inset-0 bg-gradient-hero opacity-85" />
     </div>
 
@@ -34,8 +42,11 @@ const HeroSection = ({ onRequestAmbulance }: HeroSectionProps) => (
           </span>
 
           <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-primary-foreground leading-tight mb-6">
-            Every Second <br />
-            <span className="text-gradient-emergency">Counts.</span>
+            <span aria-hidden="true">
+              Every Second <br />
+              <span className="text-gradient-emergency">Counts.</span>
+            </span>
+            <span className="sr-only">HealthRide — AI-Powered Emergency Ambulance Dispatch</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-primary-foreground/70 max-w-xl mb-8 font-body">

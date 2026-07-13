@@ -249,6 +249,7 @@ const TrackingMapSection = () => {
                 <div className="relative">
                   <FileText className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                   <textarea
+                    aria-label="Reason for transport or medical condition"
                     value={form.problem}
                     onChange={(e) => update("problem", e.target.value)}
                     placeholder="Reason for transport / medical condition *"
@@ -257,6 +258,7 @@ const TrackingMapSection = () => {
                 </div>
 
                 <textarea
+                  aria-label="Additional notes"
                   value={form.notes}
                   onChange={(e) => update("notes", e.target.value)}
                   placeholder="Additional notes (wheelchair needed, oxygen, etc.)"
