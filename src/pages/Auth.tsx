@@ -56,8 +56,11 @@ const Auth = () => {
   const [businessContact, setBusinessContact] = useState("");
 
   useEffect(() => {
-    if (user) navigate("/profile");
-  }, [user, navigate]);
+    // Only auto-redirect signed-in users away from /auth when they are not
+    // in the middle of submitting a driver/hospital registration (which now
+    // requires an authenticated session).
+    if (user && selectedRole === "patient") navigate("/profile");
+  }, [user, navigate, selectedRole]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
