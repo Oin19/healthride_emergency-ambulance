@@ -56,8 +56,11 @@ const Auth = () => {
   const [businessContact, setBusinessContact] = useState("");
 
   useEffect(() => {
-    if (user) navigate("/profile");
-  }, [user, navigate]);
+    // Only auto-redirect signed-in users away from /auth when they are not
+    // in the middle of submitting a driver/hospital registration (which now
+    // requires an authenticated session).
+    if (user && selectedRole === "patient") navigate("/profile");
+  }, [user, navigate, selectedRole]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,6 +85,11 @@ const Auth = () => {
     }
 
     if (selectedRole === "driver") {
+      if (!user) {
+        toast({ title: "Sign in required", description: "Please create a patient account or sign in first, then submit your driver registration.", variant: "destructive" });
+        setLoading(false);
+        return;
+      }
       if (driverMobile.length !== 10) {
         toast({ title: "Invalid mobile", description: "Enter a valid 10-digit mobile number.", variant: "destructive" });
         setLoading(false);
@@ -115,6 +123,11 @@ const Auth = () => {
     }
 
     if (selectedRole === "hospital") {
+      if (!user) {
+        toast({ title: "Sign in required", description: "Please create an account or sign in first, then submit your hospital registration.", variant: "destructive" });
+        setLoading(false);
+        return;
+      }
       const idValid = idType === "nin" ? ninOrHfr.length === 10 : ninOrHfr.length === 12;
       if (!idValid) {
         toast({ title: "Invalid ID", description: idType === "nin" ? "NIN must be 10 digits." : "HFR ID must be 12 digits.", variant: "destructive" });
