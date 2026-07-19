@@ -417,6 +417,45 @@ export type Database = {
         }
         Relationships: []
       }
+      security_events: {
+        Row: {
+          actor_email: string | null
+          actor_user_id: string | null
+          created_at: string
+          details: Json | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          resource: string | null
+          severity: string
+          user_agent: string | null
+        }
+        Insert: {
+          actor_email?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          details?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          resource?: string | null
+          severity?: string
+          user_agent?: string | null
+        }
+        Update: {
+          actor_email?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          details?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          resource?: string | null
+          severity?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -470,6 +509,18 @@ export type Database = {
         }
         Relationships: []
       }
+      security_alerts: {
+        Row: {
+          event_type: string | null
+          first_seen: string | null
+          last_seen: string | null
+          max_severity: string | null
+          occurrences: number | null
+          scope: string | null
+          scope_key: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
@@ -480,6 +531,18 @@ export type Database = {
         Returns: boolean
       }
       is_own_profile: { Args: { _profile_id: string }; Returns: boolean }
+      log_security_event: {
+        Args: {
+          _actor_email?: string
+          _details?: Json
+          _event_type: string
+          _ip_address?: string
+          _resource?: string
+          _severity?: string
+          _user_agent?: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

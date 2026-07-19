@@ -13,6 +13,7 @@ import healthrideLogo from "@/assets/healthride-logo.png";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Helmet } from "react-helmet-async";
+import { logSecurityEvent } from "@/lib/securityLog";
 
 type UserRole = "patient" | "driver" | "hospital";
 
@@ -163,7 +164,19 @@ const Auth = () => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) {
+      void logSecurityEvent("auth.failed_login", {
+        severity: "warning",
+        resource: "/auth",
+        actorEmail: email,
+        details: { reason: error.message },
+      });
       toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      void logSecurityEvent("auth.login_success", {
+        severity: "info",
+        resource: "/auth",
+        actorEmail: email,
+      });
     }
   };
 
