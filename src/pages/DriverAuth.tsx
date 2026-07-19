@@ -12,6 +12,7 @@ import healthrideLogo from "@/assets/healthride-logo.png";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { getCityList } from "@/data/cityCoordinates";
+import { logSecurityEvent } from "@/lib/securityLog";
 
 const ambulanceTypes = [
   "Basic Life Support (BLS)",
@@ -55,6 +56,12 @@ const DriverAuth = () => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) {
+      void logSecurityEvent("auth.failed_login", {
+        severity: "warning",
+        resource: "/driver-auth",
+        actorEmail: email,
+        details: { reason: error.message },
+      });
       toast({ title: "Error", description: error.message, variant: "destructive" });
       return;
     }
@@ -69,6 +76,11 @@ const DriverAuth = () => {
       if (dp) {
         navigate("/driver");
       } else {
+        void logSecurityEvent("auth.driver_portal_no_profile", {
+          severity: "warning",
+          resource: "/driver-auth",
+          actorEmail: email,
+        });
         toast({ title: "No driver profile", description: "This account doesn't have a driver profile. Please sign up as a driver.", variant: "destructive" });
         await supabase.auth.signOut();
       }

@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Loader2, Shield, Trash2, Pencil, CheckCircle, XCircle, Map } from "lucide-react";
 import AdminLiveMap from "@/components/AdminLiveMap";
 import { useToast } from "@/hooks/use-toast";
+import { logSecurityEvent } from "@/lib/securityLog";
 
 type DriverReg = {
   id: string;
@@ -41,6 +42,28 @@ type HospitalReg = {
   created_at: string;
 };
 
+type SecurityEvent = {
+  id: string;
+  event_type: string;
+  severity: string;
+  actor_user_id: string | null;
+  actor_email: string | null;
+  ip_address: string | null;
+  resource: string | null;
+  details: any;
+  created_at: string;
+};
+
+type SecurityAlert = {
+  scope: string;
+  scope_key: string;
+  event_type: string;
+  occurrences: number;
+  first_seen: string;
+  last_seen: string;
+  max_severity: string;
+};
+
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800 border-yellow-300",
   approved: "bg-green-100 text-green-800 border-green-300",
@@ -56,6 +79,9 @@ const Admin = () => {
   const [drivers, setDrivers] = useState<DriverReg[]>([]);
   const [hospitals, setHospitals] = useState<HospitalReg[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
+  const [securityAlerts, setSecurityAlerts] = useState<SecurityAlert[]>([]);
+  const [loadingSecurity, setLoadingSecurity] = useState(false);
 
   // Edit dialog state
   const [editDialog, setEditDialog] = useState<{ type: "driver" | "hospital"; data: any } | null>(null);
@@ -75,6 +101,11 @@ const Admin = () => {
   const checkAdminRole = async () => {
     const { data } = await supabase.rpc("has_role", { _user_id: user!.id, _role: "admin" });
     if (!data) {
+      void logSecurityEvent("authorization.denied", {
+        severity: "warning",
+        resource: "/admin",
+        details: { required_role: "admin" },
+      });
       toast({ title: "Access Denied", description: "You don't have admin privileges.", variant: "destructive" });
       navigate("/");
       return;
@@ -82,6 +113,7 @@ const Admin = () => {
     setIsAdmin(true);
     setChecking(false);
     fetchData();
+    fetchSecurity();
   };
 
   const fetchData = async () => {
@@ -93,6 +125,17 @@ const Admin = () => {
     if (dRes.data) setDrivers(dRes.data as DriverReg[]);
     if (hRes.data) setHospitals(hRes.data as HospitalReg[]);
     setLoadingData(false);
+  };
+
+  const fetchSecurity = async () => {
+    setLoadingSecurity(true);
+    const [eRes, aRes] = await Promise.all([
+      supabase.from("security_events" as any).select("*").order("created_at", { ascending: false }).limit(100),
+      supabase.from("security_alerts" as any).select("*").order("last_seen", { ascending: false }).limit(50),
+    ]);
+    if (eRes.data) setSecurityEvents(eRes.data as any);
+    if (aRes.data) setSecurityAlerts(aRes.data as any);
+    setLoadingSecurity(false);
   };
 
   const updateStatus = async (type: "driver" | "hospital", id: string, status: string, notes: string) => {
@@ -173,6 +216,7 @@ const Admin = () => {
             <TabsTrigger value="live-map" className="flex items-center gap-1.5"><Map className="w-4 h-4" /> Live Map</TabsTrigger>
             <TabsTrigger value="drivers">Driver Registrations</TabsTrigger>
             <TabsTrigger value="hospitals">Hospital Registrations</TabsTrigger>
+            <TabsTrigger value="security" className="flex items-center gap-1.5"><Shield className="w-4 h-4" /> Security</TabsTrigger>
           </TabsList>
 
           <TabsContent value="live-map">
@@ -291,6 +335,101 @@ const Admin = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="security">
+            <div className="space-y-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="text-base">Active alerts (last 24h)</CardTitle>
+                  <Button size="sm" variant="outline" onClick={fetchSecurity} disabled={loadingSecurity}>
+                    {loadingSecurity ? <Loader2 className="w-4 h-4 animate-spin" /> : "Refresh"}
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  {securityAlerts.length === 0 ? (
+                    <p className="text-center text-sm text-muted-foreground py-6">No suspicious activity detected.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Scope</TableHead>
+                            <TableHead>Identifier</TableHead>
+                            <TableHead>Event</TableHead>
+                            <TableHead>Count</TableHead>
+                            <TableHead>Severity</TableHead>
+                            <TableHead>Last seen</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {securityAlerts.map((a, i) => (
+                            <TableRow key={i}>
+                              <TableCell className="text-xs uppercase">{a.scope}</TableCell>
+                              <TableCell className="font-mono text-xs max-w-[240px] truncate">{a.scope_key}</TableCell>
+                              <TableCell className="text-sm">{a.event_type}</TableCell>
+                              <TableCell className="font-bold">{a.occurrences}</TableCell>
+                              <TableCell>
+                                <Badge variant="outline" className={
+                                  a.max_severity === "critical" ? "bg-red-100 text-red-800 border-red-300"
+                                  : a.max_severity === "warning" ? "bg-yellow-100 text-yellow-800 border-yellow-300"
+                                  : "bg-muted"
+                                }>{a.max_severity}</Badge>
+                              </TableCell>
+                              <TableCell className="text-xs text-muted-foreground">{new Date(a.last_seen).toLocaleString()}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader><CardTitle className="text-base">Recent security events</CardTitle></CardHeader>
+                <CardContent>
+                  {loadingSecurity ? (
+                    <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin" /></div>
+                  ) : securityEvents.length === 0 ? (
+                    <p className="text-center text-sm text-muted-foreground py-6">No events recorded yet.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>When</TableHead>
+                            <TableHead>Event</TableHead>
+                            <TableHead>Severity</TableHead>
+                            <TableHead>Actor</TableHead>
+                            <TableHead>Resource</TableHead>
+                            <TableHead>Details</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {securityEvents.map((ev) => (
+                            <TableRow key={ev.id}>
+                              <TableCell className="text-xs text-muted-foreground whitespace-nowrap">{new Date(ev.created_at).toLocaleString()}</TableCell>
+                              <TableCell className="text-sm">{ev.event_type}</TableCell>
+                              <TableCell>
+                                <Badge variant="outline" className={
+                                  ev.severity === "critical" ? "bg-red-100 text-red-800 border-red-300"
+                                  : ev.severity === "warning" ? "bg-yellow-100 text-yellow-800 border-yellow-300"
+                                  : "bg-muted"
+                                }>{ev.severity}</Badge>
+                              </TableCell>
+                              <TableCell className="text-xs">{ev.actor_email || ev.actor_user_id || "—"}</TableCell>
+                              <TableCell className="text-xs">{ev.resource || "—"}</TableCell>
+                              <TableCell className="text-xs font-mono max-w-[280px] truncate">{ev.details ? JSON.stringify(ev.details) : ""}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
