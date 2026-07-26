@@ -105,6 +105,14 @@ const Admin = () => {
   const [securityAlerts, setSecurityAlerts] = useState<SecurityAlert[]>([]);
   const [loadingSecurity, setLoadingSecurity] = useState(false);
 
+  // Security export filters
+  const [alertFrom, setAlertFrom] = useState("");
+  const [alertTo, setAlertTo] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState<string>("all");
+  const [eventFrom, setEventFrom] = useState("");
+  const [eventTo, setEventTo] = useState("");
+  const [eventSeverity, setEventSeverity] = useState<string>("all");
+
   // Edit dialog state
   const [editDialog, setEditDialog] = useState<{ type: "driver" | "hospital"; data: any } | null>(null);
   const [editNotes, setEditNotes] = useState("");
