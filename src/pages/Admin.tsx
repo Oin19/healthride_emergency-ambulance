@@ -478,10 +478,10 @@ const Admin = () => {
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-base">Recent security events</CardTitle>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportCSV("security-events", filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity), ["created_at","event_type","severity","actor_email","actor_user_id","ip_address","resource","details"])}>
+                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportCSV("security-events", filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity, eventSearch, ["actor_user_id", "ip_address"]), ["created_at","event_type","severity","actor_email","actor_user_id","ip_address","resource","details"])}>
                       <Download className="w-4 h-4 mr-1" /> CSV
                     </Button>
-                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportPDF("Security Events", "security-events", filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity), [
+                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportPDF("Security Events", "security-events", filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity, eventSearch, ["actor_user_id", "ip_address"]), [
                       { key: "created_at", header: "When" },
                       { key: "event_type", header: "Event" },
                       { key: "severity", header: "Severity" },
@@ -514,11 +514,15 @@ const Admin = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    {(eventFrom || eventTo || eventSeverity !== "all") && (
-                      <Button size="sm" variant="ghost" onClick={() => { setEventFrom(""); setEventTo(""); setEventSeverity("all"); }}>Clear</Button>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-muted-foreground">User ID / IP</label>
+                      <Input type="text" placeholder="Search user ID or IP..." value={eventSearch} onChange={(e) => setEventSearch(e.target.value)} className="h-8 w-[200px]" />
+                    </div>
+                    {(eventFrom || eventTo || eventSeverity !== "all" || eventSearch) && (
+                      <Button size="sm" variant="ghost" onClick={() => { setEventFrom(""); setEventTo(""); setEventSeverity("all"); setEventSearch(""); }}>Clear</Button>
                     )}
                     <span className="text-xs text-muted-foreground ml-auto">
-                      Export: {filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity).length} of {securityEvents.length}
+                      Export: {filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity, eventSearch, ["actor_user_id", "ip_address"]).length} of {securityEvents.length}
                     </span>
                   </div>
                   {loadingSecurity ? (
