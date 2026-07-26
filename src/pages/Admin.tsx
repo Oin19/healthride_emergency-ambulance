@@ -17,6 +17,27 @@ import { useToast } from "@/hooks/use-toast";
 import { logSecurityEvent } from "@/lib/securityLog";
 import { exportCSV, exportPDF } from "@/lib/exportAudit";
 
+const SEVERITIES = ["info", "warning", "critical"] as const;
+
+function filterByDateSeverity<T extends Record<string, any>>(
+  rows: T[],
+  dateKey: keyof T,
+  severityKey: keyof T,
+  from: string,
+  to: string,
+  severity: string
+): T[] {
+  const fromTs = from ? new Date(from).getTime() : null;
+  const toTs = to ? new Date(to).getTime() + 24 * 60 * 60 * 1000 - 1 : null;
+  return rows.filter((r) => {
+    const t = new Date(r[dateKey] as string).getTime();
+    if (fromTs !== null && t < fromTs) return false;
+    if (toTs !== null && t > toTs) return false;
+    if (severity !== "all" && r[severityKey] !== severity) return false;
+    return true;
+  });
+}
+
 type DriverReg = {
   id: string;
   mobile: string;
@@ -83,6 +104,14 @@ const Admin = () => {
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
   const [securityAlerts, setSecurityAlerts] = useState<SecurityAlert[]>([]);
   const [loadingSecurity, setLoadingSecurity] = useState(false);
+
+  // Security export filters
+  const [alertFrom, setAlertFrom] = useState("");
+  const [alertTo, setAlertTo] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState<string>("all");
+  const [eventFrom, setEventFrom] = useState("");
+  const [eventTo, setEventTo] = useState("");
+  const [eventSeverity, setEventSeverity] = useState<string>("all");
 
   // Edit dialog state
   const [editDialog, setEditDialog] = useState<{ type: "driver" | "hospital"; data: any } | null>(null);
@@ -344,10 +373,10 @@ const Admin = () => {
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-base">Active alerts (last 24h)</CardTitle>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportCSV("security-alerts", securityAlerts, ["scope","scope_key","event_type","occurrences","max_severity","first_seen","last_seen"])}>
+                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportCSV("security-alerts", filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity), ["scope","scope_key","event_type","occurrences","max_severity","first_seen","last_seen"])}>
                       <Download className="w-4 h-4 mr-1" /> CSV
                     </Button>
-                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportPDF("Security Alerts (last 24h)", "security-alerts", securityAlerts, [
+                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportPDF("Security Alerts (last 24h)", "security-alerts", filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity), [
                       { key: "scope", header: "Scope" },
                       { key: "scope_key", header: "Identifier" },
                       { key: "event_type", header: "Event" },
@@ -364,6 +393,32 @@ const Admin = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
+                  <div className="flex flex-wrap items-end gap-2 mb-3 pb-3 border-b">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-muted-foreground">From</label>
+                      <Input type="date" value={alertFrom} onChange={(e) => setAlertFrom(e.target.value)} className="h-8 w-[150px]" />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-muted-foreground">To</label>
+                      <Input type="date" value={alertTo} onChange={(e) => setAlertTo(e.target.value)} className="h-8 w-[150px]" />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-muted-foreground">Severity</label>
+                      <Select value={alertSeverity} onValueChange={setAlertSeverity}>
+                        <SelectTrigger className="h-8 w-[140px]"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All</SelectItem>
+                          {SEVERITIES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {(alertFrom || alertTo || alertSeverity !== "all") && (
+                      <Button size="sm" variant="ghost" onClick={() => { setAlertFrom(""); setAlertTo(""); setAlertSeverity("all"); }}>Clear</Button>
+                    )}
+                    <span className="text-xs text-muted-foreground ml-auto">
+                      Export: {filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity).length} of {securityAlerts.length}
+                    </span>
+                  </div>
                   {securityAlerts.length === 0 ? (
                     <p className="text-center text-sm text-muted-foreground py-6">No suspicious activity detected.</p>
                   ) : (
@@ -407,10 +462,10 @@ const Admin = () => {
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-base">Recent security events</CardTitle>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportCSV("security-events", securityEvents, ["created_at","event_type","severity","actor_email","actor_user_id","ip_address","resource","details"])}>
+                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportCSV("security-events", filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity), ["created_at","event_type","severity","actor_email","actor_user_id","ip_address","resource","details"])}>
                       <Download className="w-4 h-4 mr-1" /> CSV
                     </Button>
-                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportPDF("Security Events", "security-events", securityEvents, [
+                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportPDF("Security Events", "security-events", filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity), [
                       { key: "created_at", header: "When" },
                       { key: "event_type", header: "Event" },
                       { key: "severity", header: "Severity" },
@@ -424,6 +479,32 @@ const Admin = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
+                  <div className="flex flex-wrap items-end gap-2 mb-3 pb-3 border-b">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-muted-foreground">From</label>
+                      <Input type="date" value={eventFrom} onChange={(e) => setEventFrom(e.target.value)} className="h-8 w-[150px]" />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-muted-foreground">To</label>
+                      <Input type="date" value={eventTo} onChange={(e) => setEventTo(e.target.value)} className="h-8 w-[150px]" />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-muted-foreground">Severity</label>
+                      <Select value={eventSeverity} onValueChange={setEventSeverity}>
+                        <SelectTrigger className="h-8 w-[140px]"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All</SelectItem>
+                          {SEVERITIES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {(eventFrom || eventTo || eventSeverity !== "all") && (
+                      <Button size="sm" variant="ghost" onClick={() => { setEventFrom(""); setEventTo(""); setEventSeverity("all"); }}>Clear</Button>
+                    )}
+                    <span className="text-xs text-muted-foreground ml-auto">
+                      Export: {filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity).length} of {securityEvents.length}
+                    </span>
+                  </div>
                   {loadingSecurity ? (
                     <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin" /></div>
                   ) : securityEvents.length === 0 ? (
