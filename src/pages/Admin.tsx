@@ -119,9 +119,11 @@ const Admin = () => {
   const [alertFrom, setAlertFrom] = useState("");
   const [alertTo, setAlertTo] = useState("");
   const [alertSeverity, setAlertSeverity] = useState<string>("all");
+  const [alertSearch, setAlertSearch] = useState("");
   const [eventFrom, setEventFrom] = useState("");
   const [eventTo, setEventTo] = useState("");
   const [eventSeverity, setEventSeverity] = useState<string>("all");
+  const [eventSearch, setEventSearch] = useState("");
 
   // Edit dialog state
   const [editDialog, setEditDialog] = useState<{ type: "driver" | "hospital"; data: any } | null>(null);
