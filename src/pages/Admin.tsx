@@ -25,15 +25,25 @@ function filterByDateSeverity<T extends Record<string, any>>(
   severityKey: keyof T,
   from: string,
   to: string,
-  severity: string
+  severity: string,
+  search?: string,
+  searchKeys?: (keyof T)[]
 ): T[] {
   const fromTs = from ? new Date(from).getTime() : null;
   const toTs = to ? new Date(to).getTime() + 24 * 60 * 60 * 1000 - 1 : null;
+  const q = search?.trim().toLowerCase();
   return rows.filter((r) => {
     const t = new Date(r[dateKey] as string).getTime();
     if (fromTs !== null && t < fromTs) return false;
     if (toTs !== null && t > toTs) return false;
     if (severity !== "all" && r[severityKey] !== severity) return false;
+    if (q && searchKeys && searchKeys.length) {
+      const matches = searchKeys.some((k) => {
+        const v = r[k];
+        return v !== null && v !== undefined && String(v).toLowerCase().includes(q);
+      });
+      if (!matches) return false;
+    }
     return true;
   });
 }
@@ -109,9 +119,11 @@ const Admin = () => {
   const [alertFrom, setAlertFrom] = useState("");
   const [alertTo, setAlertTo] = useState("");
   const [alertSeverity, setAlertSeverity] = useState<string>("all");
+  const [alertSearch, setAlertSearch] = useState("");
   const [eventFrom, setEventFrom] = useState("");
   const [eventTo, setEventTo] = useState("");
   const [eventSeverity, setEventSeverity] = useState<string>("all");
+  const [eventSearch, setEventSearch] = useState("");
 
   // Edit dialog state
   const [editDialog, setEditDialog] = useState<{ type: "driver" | "hospital"; data: any } | null>(null);
@@ -373,10 +385,10 @@ const Admin = () => {
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-base">Active alerts (last 24h)</CardTitle>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportCSV("security-alerts", filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity), ["scope","scope_key","event_type","occurrences","max_severity","first_seen","last_seen"])}>
+                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportCSV("security-alerts", filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity, alertSearch, ["scope_key"]), ["scope","scope_key","event_type","occurrences","max_severity","first_seen","last_seen"])}>
                       <Download className="w-4 h-4 mr-1" /> CSV
                     </Button>
-                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportPDF("Security Alerts (last 24h)", "security-alerts", filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity), [
+                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportPDF("Security Alerts (last 24h)", "security-alerts", filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity, alertSearch, ["scope_key"]), [
                       { key: "scope", header: "Scope" },
                       { key: "scope_key", header: "Identifier" },
                       { key: "event_type", header: "Event" },
@@ -412,11 +424,15 @@ const Admin = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    {(alertFrom || alertTo || alertSeverity !== "all") && (
-                      <Button size="sm" variant="ghost" onClick={() => { setAlertFrom(""); setAlertTo(""); setAlertSeverity("all"); }}>Clear</Button>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-muted-foreground">User ID / IP</label>
+                      <Input type="text" placeholder="Search identifier..." value={alertSearch} onChange={(e) => setAlertSearch(e.target.value)} className="h-8 w-[200px]" />
+                    </div>
+                    {(alertFrom || alertTo || alertSeverity !== "all" || alertSearch) && (
+                      <Button size="sm" variant="ghost" onClick={() => { setAlertFrom(""); setAlertTo(""); setAlertSeverity("all"); setAlertSearch(""); }}>Clear</Button>
                     )}
                     <span className="text-xs text-muted-foreground ml-auto">
-                      Export: {filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity).length} of {securityAlerts.length}
+                      Export: {filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity, alertSearch, ["scope_key"]).length} of {securityAlerts.length}
                     </span>
                   </div>
                   {securityAlerts.length === 0 ? (
@@ -462,10 +478,10 @@ const Admin = () => {
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-base">Recent security events</CardTitle>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportCSV("security-events", filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity), ["created_at","event_type","severity","actor_email","actor_user_id","ip_address","resource","details"])}>
+                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportCSV("security-events", filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity, eventSearch, ["actor_user_id", "ip_address"]), ["created_at","event_type","severity","actor_email","actor_user_id","ip_address","resource","details"])}>
                       <Download className="w-4 h-4 mr-1" /> CSV
                     </Button>
-                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportPDF("Security Events", "security-events", filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity), [
+                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportPDF("Security Events", "security-events", filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity, eventSearch, ["actor_user_id", "ip_address"]), [
                       { key: "created_at", header: "When" },
                       { key: "event_type", header: "Event" },
                       { key: "severity", header: "Severity" },
@@ -498,11 +514,15 @@ const Admin = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    {(eventFrom || eventTo || eventSeverity !== "all") && (
-                      <Button size="sm" variant="ghost" onClick={() => { setEventFrom(""); setEventTo(""); setEventSeverity("all"); }}>Clear</Button>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-muted-foreground">User ID / IP</label>
+                      <Input type="text" placeholder="Search user ID or IP..." value={eventSearch} onChange={(e) => setEventSearch(e.target.value)} className="h-8 w-[200px]" />
+                    </div>
+                    {(eventFrom || eventTo || eventSeverity !== "all" || eventSearch) && (
+                      <Button size="sm" variant="ghost" onClick={() => { setEventFrom(""); setEventTo(""); setEventSeverity("all"); setEventSearch(""); }}>Clear</Button>
                     )}
                     <span className="text-xs text-muted-foreground ml-auto">
-                      Export: {filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity).length} of {securityEvents.length}
+                      Export: {filterByDateSeverity(securityEvents, "created_at", "severity", eventFrom, eventTo, eventSeverity, eventSearch, ["actor_user_id", "ip_address"]).length} of {securityEvents.length}
                     </span>
                   </div>
                   {loadingSecurity ? (
