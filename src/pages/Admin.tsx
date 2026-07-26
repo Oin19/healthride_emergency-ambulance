@@ -385,10 +385,10 @@ const Admin = () => {
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-base">Active alerts (last 24h)</CardTitle>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportCSV("security-alerts", filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity), ["scope","scope_key","event_type","occurrences","max_severity","first_seen","last_seen"])}>
+                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportCSV("security-alerts", filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity, alertSearch, ["scope_key"]), ["scope","scope_key","event_type","occurrences","max_severity","first_seen","last_seen"])}>
                       <Download className="w-4 h-4 mr-1" /> CSV
                     </Button>
-                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportPDF("Security Alerts (last 24h)", "security-alerts", filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity), [
+                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportPDF("Security Alerts (last 24h)", "security-alerts", filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity, alertSearch, ["scope_key"]), [
                       { key: "scope", header: "Scope" },
                       { key: "scope_key", header: "Identifier" },
                       { key: "event_type", header: "Event" },
@@ -424,11 +424,15 @@ const Admin = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    {(alertFrom || alertTo || alertSeverity !== "all") && (
-                      <Button size="sm" variant="ghost" onClick={() => { setAlertFrom(""); setAlertTo(""); setAlertSeverity("all"); }}>Clear</Button>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-muted-foreground">User ID / IP</label>
+                      <Input type="text" placeholder="Search identifier..." value={alertSearch} onChange={(e) => setAlertSearch(e.target.value)} className="h-8 w-[200px]" />
+                    </div>
+                    {(alertFrom || alertTo || alertSeverity !== "all" || alertSearch) && (
+                      <Button size="sm" variant="ghost" onClick={() => { setAlertFrom(""); setAlertTo(""); setAlertSeverity("all"); setAlertSearch(""); }}>Clear</Button>
                     )}
                     <span className="text-xs text-muted-foreground ml-auto">
-                      Export: {filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity).length} of {securityAlerts.length}
+                      Export: {filterByDateSeverity(securityAlerts, "last_seen", "max_severity", alertFrom, alertTo, alertSeverity, alertSearch, ["scope_key"]).length} of {securityAlerts.length}
                     </span>
                   </div>
                   {securityAlerts.length === 0 ? (
