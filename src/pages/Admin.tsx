@@ -25,15 +25,25 @@ function filterByDateSeverity<T extends Record<string, any>>(
   severityKey: keyof T,
   from: string,
   to: string,
-  severity: string
+  severity: string,
+  search?: string,
+  searchKeys?: (keyof T)[]
 ): T[] {
   const fromTs = from ? new Date(from).getTime() : null;
   const toTs = to ? new Date(to).getTime() + 24 * 60 * 60 * 1000 - 1 : null;
+  const q = search?.trim().toLowerCase();
   return rows.filter((r) => {
     const t = new Date(r[dateKey] as string).getTime();
     if (fromTs !== null && t < fromTs) return false;
     if (toTs !== null && t > toTs) return false;
     if (severity !== "all" && r[severityKey] !== severity) return false;
+    if (q && searchKeys && searchKeys.length) {
+      const matches = searchKeys.some((k) => {
+        const v = r[k];
+        return v !== null && v !== undefined && String(v).toLowerCase().includes(q);
+      });
+      if (!matches) return false;
+    }
     return true;
   });
 }
