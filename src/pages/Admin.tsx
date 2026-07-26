@@ -11,10 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Loader2, Shield, Trash2, Pencil, CheckCircle, XCircle, Map } from "lucide-react";
+import { ArrowLeft, Loader2, Shield, Trash2, Pencil, CheckCircle, XCircle, Map, Download, FileText } from "lucide-react";
 import AdminLiveMap from "@/components/AdminLiveMap";
 import { useToast } from "@/hooks/use-toast";
 import { logSecurityEvent } from "@/lib/securityLog";
+import { exportCSV, exportPDF } from "@/lib/exportAudit";
 
 type DriverReg = {
   id: string;
@@ -342,9 +343,25 @@ const Admin = () => {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-base">Active alerts (last 24h)</CardTitle>
-                  <Button size="sm" variant="outline" onClick={fetchSecurity} disabled={loadingSecurity}>
-                    {loadingSecurity ? <Loader2 className="w-4 h-4 animate-spin" /> : "Refresh"}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportCSV("security-alerts", securityAlerts, ["scope","scope_key","event_type","occurrences","max_severity","first_seen","last_seen"])}>
+                      <Download className="w-4 h-4 mr-1" /> CSV
+                    </Button>
+                    <Button size="sm" variant="outline" disabled={!securityAlerts.length} onClick={() => exportPDF("Security Alerts (last 24h)", "security-alerts", securityAlerts, [
+                      { key: "scope", header: "Scope" },
+                      { key: "scope_key", header: "Identifier" },
+                      { key: "event_type", header: "Event" },
+                      { key: "occurrences", header: "Count" },
+                      { key: "max_severity", header: "Severity" },
+                      { key: "first_seen", header: "First seen" },
+                      { key: "last_seen", header: "Last seen" },
+                    ])}>
+                      <FileText className="w-4 h-4 mr-1" /> PDF
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={fetchSecurity} disabled={loadingSecurity}>
+                      {loadingSecurity ? <Loader2 className="w-4 h-4 animate-spin" /> : "Refresh"}
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {securityAlerts.length === 0 ? (
@@ -387,7 +404,25 @@ const Admin = () => {
               </Card>
 
               <Card>
-                <CardHeader><CardTitle className="text-base">Recent security events</CardTitle></CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="text-base">Recent security events</CardTitle>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportCSV("security-events", securityEvents, ["created_at","event_type","severity","actor_email","actor_user_id","ip_address","resource","details"])}>
+                      <Download className="w-4 h-4 mr-1" /> CSV
+                    </Button>
+                    <Button size="sm" variant="outline" disabled={!securityEvents.length} onClick={() => exportPDF("Security Events", "security-events", securityEvents, [
+                      { key: "created_at", header: "When" },
+                      { key: "event_type", header: "Event" },
+                      { key: "severity", header: "Severity" },
+                      { key: "actor_email", header: "Actor" },
+                      { key: "ip_address", header: "IP" },
+                      { key: "resource", header: "Resource" },
+                      { key: "details", header: "Details" },
+                    ])}>
+                      <FileText className="w-4 h-4 mr-1" /> PDF
+                    </Button>
+                  </div>
+                </CardHeader>
                 <CardContent>
                   {loadingSecurity ? (
                     <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin" /></div>
