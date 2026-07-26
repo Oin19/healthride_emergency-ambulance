@@ -17,6 +17,27 @@ import { useToast } from "@/hooks/use-toast";
 import { logSecurityEvent } from "@/lib/securityLog";
 import { exportCSV, exportPDF } from "@/lib/exportAudit";
 
+const SEVERITIES = ["info", "warning", "critical"] as const;
+
+function filterByDateSeverity<T extends Record<string, any>>(
+  rows: T[],
+  dateKey: keyof T,
+  severityKey: keyof T,
+  from: string,
+  to: string,
+  severity: string
+): T[] {
+  const fromTs = from ? new Date(from).getTime() : null;
+  const toTs = to ? new Date(to).getTime() + 24 * 60 * 60 * 1000 - 1 : null;
+  return rows.filter((r) => {
+    const t = new Date(r[dateKey] as string).getTime();
+    if (fromTs !== null && t < fromTs) return false;
+    if (toTs !== null && t > toTs) return false;
+    if (severity !== "all" && r[severityKey] !== severity) return false;
+    return true;
+  });
+}
+
 type DriverReg = {
   id: string;
   mobile: string;
