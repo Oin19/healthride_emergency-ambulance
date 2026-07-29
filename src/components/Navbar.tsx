@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import healthrideLogo from "@/assets/healthride-logo.png";
 import { motion, AnimatePresence } from "framer-motion";
 import EmergencyRequestModal from "@/components/EmergencyRequestModal";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -16,7 +18,13 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === "/";
-  const links = ["Features", "How It Works", "Safety", "Contact"];
+  const { t } = useTranslation();
+  const links = [
+    { key: "features", label: t("nav.features"), anchor: "features" },
+    { key: "how", label: t("nav.how"), anchor: "how-it-works" },
+    { key: "safety", label: t("nav.safety"), anchor: "safety" },
+    { key: "contact", label: t("nav.contact"), anchor: "contact" },
+  ];
 
   useEffect(() => {
     if (!user) { setIsAdmin(false); return; }
@@ -43,11 +51,12 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center gap-8">
             {links.map((l) => (
-              <a key={l} href={`#${l.toLowerCase().replace(/ /g, "-")}`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                {l}
+              <a key={l.key} href={`#${l.anchor}`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {l.label}
               </a>
             ))}
-            <Button variant="emergency" size="sm" onClick={() => setEmergencyOpen(true)}>Request Ambulance</Button>
+            <LanguageSwitcher />
+            <Button variant="emergency" size="sm" onClick={() => setEmergencyOpen(true)}>{t("nav.request")}</Button>
             <Button variant="outline" size="sm" onClick={() => navigate("/driver-auth")}>
               <Truck className="w-4 h-4" /> Driver Portal
             </Button>
@@ -57,7 +66,7 @@ const Navbar = () => {
               </Button>
             )}
             <Button variant="hero" size="sm" onClick={() => navigate(user ? "/profile" : "/auth")}>
-              <UserCircle className="w-4 h-4" /> {user ? "Profile" : "Sign In"}
+              <UserCircle className="w-4 h-4" /> {user ? "Profile" : t("nav.signin")}
             </Button>
           </div>
 
@@ -76,11 +85,12 @@ const Navbar = () => {
             >
               <div className="p-4 flex flex-col gap-3">
                 {links.map((l) => (
-                  <a key={l} href={`#${l.toLowerCase().replace(/ /g, "-")}`} className="text-sm text-muted-foreground py-2" onClick={() => setOpen(false)}>
-                    {l}
+                  <a key={l.key} href={`#${l.anchor}`} className="text-sm text-muted-foreground py-2" onClick={() => setOpen(false)}>
+                    {l.label}
                   </a>
                 ))}
-                <Button variant="emergency" size="sm" onClick={() => { setOpen(false); setEmergencyOpen(true); }}>Request Ambulance</Button>
+                <div className="py-1"><LanguageSwitcher /></div>
+                <Button variant="emergency" size="sm" onClick={() => { setOpen(false); setEmergencyOpen(true); }}>{t("nav.request")}</Button>
                 <Button variant="outline" size="sm" onClick={() => { setOpen(false); navigate("/driver-auth"); }}>
                   <Truck className="w-4 h-4" /> Driver Portal
                 </Button>
@@ -90,7 +100,7 @@ const Navbar = () => {
                   </Button>
                 )}
                 <Button variant="hero" size="sm" onClick={() => { setOpen(false); navigate(user ? "/profile" : "/auth"); }}>
-                  <UserCircle className="w-4 h-4" /> {user ? "Profile" : "Sign In"}
+                  <UserCircle className="w-4 h-4" /> {user ? "Profile" : t("nav.signin")}
                 </Button>
               </div>
             </motion.div>

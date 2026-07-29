@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X, MapPin, Navigation, Phone, AlertTriangle, Heart, Bone, Brain, Flame,
-  Stethoscope, ChevronRight, Loader2, CheckCircle2, Truck, Clock, User, Shield, LogIn
+  Stethoscope, ChevronRight, Loader2, CheckCircle2, Truck, Clock, User, Shield, LogIn, Mic
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { cityCoordinates } from "@/data/cityCoordinates";
 import LiveTrackingMap from "@/components/LiveTrackingMap";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 type Step = "location" | "details" | "dispatching" | "tracking";
 
@@ -20,14 +22,15 @@ interface EmergencyType {
   icon: React.ReactNode;
 }
 
-const emergencyTypes: EmergencyType[] = [
-  { id: "cardiac", label: "Cardiac Emergency", icon: <Heart className="w-5 h-5" /> },
-  { id: "trauma", label: "Trauma / Injury", icon: <Bone className="w-5 h-5" /> },
-  { id: "stroke", label: "Stroke / Neuro", icon: <Brain className="w-5 h-5" /> },
-  { id: "burns", label: "Burns", icon: <Flame className="w-5 h-5" /> },
-  { id: "breathing", label: "Breathing Difficulty", icon: <Stethoscope className="w-5 h-5" /> },
-  { id: "other", label: "Other Emergency", icon: <AlertTriangle className="w-5 h-5" /> },
-];
+const emergencyTypeIcons: Record<string, React.ReactNode> = {
+  cardiac: <Heart className="w-5 h-5" />,
+  trauma: <Bone className="w-5 h-5" />,
+  stroke: <Brain className="w-5 h-5" />,
+  burns: <Flame className="w-5 h-5" />,
+  breathing: <Stethoscope className="w-5 h-5" />,
+  other: <AlertTriangle className="w-5 h-5" />,
+};
+const emergencyTypeIds = ["cardiac", "trauma", "stroke", "burns", "breathing", "other"] as const;
 
 // Find nearest city from coordinates
 function findNearestCity(lat: number, lng: number): string {
@@ -48,6 +51,7 @@ interface Props {
 const EmergencyRequestModal = ({ open, onClose }: Props) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [step, setStep] = useState<Step>("location");
   const [locationText, setLocationText] = useState("");
   const [detecting, setDetecting] = useState(false);
@@ -56,6 +60,11 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
   const [patientName, setPatientName] = useState("");
   const [patientPhone, setPatientPhone] = useState("");
   const [notes, setNotes] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
   const [requestId, setRequestId] = useState<string | null>(null);
   const [driverInfo, setDriverInfo] = useState<{
     full_name: string; mobile: string; vehicle_number: string; ambulance_type: string;
@@ -81,6 +90,77 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
       setRequestStatus("pending");
     }
   }, [open]);
+
+  // ============ Voice-to-form ============
+  const startVoiceRecording = useCallback(async () => {
+    if (isRecording || isTranscribing) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      const mime = MediaRecorder.isTypeSupported("audio/webm")
+        ? "audio/webm"
+        : MediaRecorder.isTypeSupported("audio/mp4")
+        ? "audio/mp4"
+        : "";
+      const recorder = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+      chunksRef.current = [];
+      recorder.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+      recorder.onstop = async () => {
+        streamRef.current?.getTracks().forEach((tr) => tr.stop());
+        const blobType = recorder.mimeType || "audio/webm";
+        const blob = new Blob(chunksRef.current, { type: blobType });
+        if (blob.size < 1024) {
+          toast.error("Recording too short — please hold and speak.");
+          return;
+        }
+        setIsTranscribing(true);
+        try {
+          const ext = blobType.includes("mp4") ? "mp4" : blobType.includes("wav") ? "wav" : "webm";
+          const fd = new FormData();
+          fd.append("file", blob, `recording.${ext}`);
+          // Map UI language to a hint for STT (bare ISO-639-1); omit for auto-detect
+          const langMap: Record<string, string> = { en: "en", hi: "hi", bn: "bn", ta: "ta", te: "te" };
+          const hint = langMap[i18n.language];
+          if (hint) fd.append("language", hint);
+
+          const { data, error } = await supabase.functions.invoke("voice-transcribe", { body: fd });
+          if (error) throw error;
+          const result = data as {
+            transcript: string; emergency_type: string | null;
+            patient_name: string | null; patient_phone: string | null; notes: string | null;
+          };
+          if (result.emergency_type) setSelectedType(result.emergency_type);
+          if (result.patient_name) setPatientName(result.patient_name);
+          if (result.patient_phone) setPatientPhone(result.patient_phone);
+          if (result.notes || result.transcript) setNotes(result.notes || result.transcript);
+          toast.success(t("emergency.voice_filled"));
+        } catch (err) {
+          console.error("voice-transcribe failed:", err);
+          toast.error("Transcription failed. Please try again.");
+        } finally {
+          setIsTranscribing(false);
+        }
+      };
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error("mic access denied:", err);
+      toast.error("Microphone access denied.");
+      setIsRecording(false);
+    }
+  }, [isRecording, isTranscribing, i18n.language, t]);
+
+  const stopVoiceRecording = useCallback(() => {
+    if (!isRecording) return;
+    setIsRecording(false);
+    try { mediaRecorderRef.current?.stop(); } catch { /* noop */ }
+  }, [isRecording]);
+
+  // Clean up mic if modal closes mid-recording
+  useEffect(() => {
+    if (!open && isRecording) stopVoiceRecording();
+  }, [open, isRecording, stopVoiceRecording]);
 
   const detectLocation = useCallback(() => {
     setDetecting(true);
@@ -239,15 +319,15 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
               {step === "location" && (
                 <motion.div key="location" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <div>
-                    <h2 className="font-display text-2xl font-bold text-foreground mb-2">Where are you?</h2>
-                    <p className="text-muted-foreground text-sm">We need your location to dispatch the nearest ambulance.</p>
+                    <h2 className="font-display text-2xl font-bold text-foreground mb-2">{t("emergency.step1_title")}</h2>
+                    <p className="text-muted-foreground text-sm">{t("emergency.step1_sub")}</p>
                   </div>
 
                   {!user && (
                     <div className="p-4 rounded-xl bg-accent/10 border border-accent/30">
-                      <p className="text-sm text-foreground mb-2 font-medium">You need to sign in to request an ambulance</p>
+                      <p className="text-sm text-foreground mb-2 font-medium">{t("emergency.signin_required")}</p>
                       <Button variant="emergency" size="sm" onClick={() => { onClose(); navigate("/auth"); }} className="gap-1.5">
-                        <LogIn className="w-4 h-4" /> Sign In
+                        <LogIn className="w-4 h-4" /> {t("nav.signin")}
                       </Button>
                     </div>
                   )}
@@ -259,11 +339,11 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                     disabled={detecting || !user}
                   >
                     {detecting ? (
-                      <><Loader2 className="w-5 h-5 animate-spin" /> Detecting Location...</>
+                      <><Loader2 className="w-5 h-5 animate-spin" /> {t("emergency.detecting")}</>
                     ) : coords ? (
-                      <><CheckCircle2 className="w-5 h-5" /> Location Detected</>
+                      <><CheckCircle2 className="w-5 h-5" /> {t("emergency.detected")}</>
                     ) : (
-                      <><Navigation className="w-5 h-5" /> Detect My Location</>
+                      <><Navigation className="w-5 h-5" /> {t("emergency.detect")}</>
                     )}
                   </Button>
 
@@ -277,7 +357,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
 
                   <div className="relative">
                     <div className="absolute inset-x-0 top-1/2 border-t border-border" />
-                    <p className="relative bg-background text-muted-foreground text-xs text-center w-fit mx-auto px-3">or enter manually</p>
+                    <p className="relative bg-background text-muted-foreground text-xs text-center w-fit mx-auto px-3">{t("emergency.or_manual")}</p>
                   </div>
 
                   <div className="relative">
@@ -288,7 +368,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                         setLocationText(e.target.value);
                         if (!coords) setCoords({ lat: 28.6139, lng: 77.2090 });
                       }}
-                      placeholder="Building name, street, landmark..."
+                      placeholder={t("emergency.loc_placeholder")}
                       className="pl-10 h-12 bg-card border-border"
                       disabled={!user}
                     />
@@ -301,7 +381,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                     disabled={!locationText.trim() || !user}
                     onClick={() => setStep("details")}
                   >
-                    Continue <ChevronRight className="w-4 h-4" />
+                    {t("emergency.continue")} <ChevronRight className="w-4 h-4" />
                   </Button>
                 </motion.div>
               )}
@@ -310,23 +390,60 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
               {step === "details" && (
                 <motion.div key="details" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <div>
-                    <h2 className="font-display text-2xl font-bold text-foreground mb-2">Emergency Details</h2>
-                    <p className="text-muted-foreground text-sm">Select the type of emergency and provide patient info.</p>
+                    <h2 className="font-display text-2xl font-bold text-foreground mb-2">{t("emergency.step2_title")}</h2>
+                    <p className="text-muted-foreground text-sm">{t("emergency.step2_sub")}</p>
                   </div>
 
+                  {/* Press-and-hold voice input */}
+                  <button
+                    type="button"
+                    onMouseDown={startVoiceRecording}
+                    onMouseUp={stopVoiceRecording}
+                    onMouseLeave={() => { if (isRecording) stopVoiceRecording(); }}
+                    onTouchStart={(e) => { e.preventDefault(); startVoiceRecording(); }}
+                    onTouchEnd={(e) => { e.preventDefault(); stopVoiceRecording(); }}
+                    disabled={isTranscribing}
+                    aria-label={t("emergency.voice_hold")}
+                    className={`w-full flex items-center justify-center gap-3 rounded-xl border p-4 select-none transition-all ${
+                      isRecording
+                        ? "border-accent bg-accent/15 shadow-emergency scale-[0.99]"
+                        : "border-accent/40 bg-accent/5 hover:bg-accent/10"
+                    } ${isTranscribing ? "opacity-70 cursor-wait" : "cursor-pointer"}`}
+                  >
+                    {isTranscribing ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin text-accent" />
+                        <span className="text-sm font-medium text-foreground">{t("emergency.voice_processing")}</span>
+                      </>
+                    ) : isRecording ? (
+                      <>
+                        <span className="relative flex w-3 h-3">
+                          <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 animate-ping" />
+                          <span className="relative inline-flex rounded-full h-3 w-3 bg-accent" />
+                        </span>
+                        <span className="text-sm font-medium text-foreground">{t("emergency.voice_recording")}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Mic className="w-5 h-5 text-accent" />
+                        <span className="text-sm font-medium text-foreground">{t("emergency.voice_hold")}</span>
+                      </>
+                    )}
+                  </button>
+
                   <div className="grid grid-cols-2 gap-3">
-                    {emergencyTypes.map((type) => (
+                    {emergencyTypeIds.map((id) => (
                       <button
-                        key={type.id}
-                        onClick={() => setSelectedType(type.id)}
+                        key={id}
+                        onClick={() => setSelectedType(id)}
                         className={`flex items-center gap-2.5 p-3.5 rounded-xl border text-left transition-all ${
-                          selectedType === type.id
+                          selectedType === id
                             ? "border-accent bg-accent/10 shadow-emergency"
                             : "border-border bg-card hover:border-accent/40"
                         }`}
                       >
-                        <span className={selectedType === type.id ? "text-accent" : "text-muted-foreground"}>{type.icon}</span>
-                        <span className={`text-sm font-medium ${selectedType === type.id ? "text-foreground" : "text-muted-foreground"}`}>{type.label}</span>
+                        <span className={selectedType === id ? "text-accent" : "text-muted-foreground"}>{emergencyTypeIcons[id]}</span>
+                        <span className={`text-sm font-medium ${selectedType === id ? "text-foreground" : "text-muted-foreground"}`}>{t(`emergency.types.${id}`)}</span>
                       </button>
                     ))}
                   </div>
@@ -334,29 +451,30 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                   <div className="space-y-3">
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input value={patientName} onChange={(e) => setPatientName(e.target.value)} placeholder="Patient name (optional)" className="pl-10 bg-card border-border" />
+                      <Input value={patientName} onChange={(e) => setPatientName(e.target.value)} placeholder={t("emergency.patient_name")} className="pl-10 bg-card border-border" />
                     </div>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input value={patientPhone} onChange={(e) => setPatientPhone(e.target.value)} placeholder="Contact number" className="pl-10 bg-card border-border" />
+                      <Input value={patientPhone} onChange={(e) => setPatientPhone(e.target.value)} placeholder={t("emergency.contact")} className="pl-10 bg-card border-border" />
                     </div>
                     <textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      placeholder="Additional notes (symptoms, conditions...)"
+                      placeholder={t("emergency.notes_ph")}
+                      aria-label={t("emergency.notes_ph")}
                       className="w-full h-20 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
                     />
                   </div>
 
                   <div className="flex gap-3">
-                    <Button variant="hero" onClick={() => setStep("location")} className="flex-1">Back</Button>
+                    <Button variant="hero" onClick={() => setStep("location")} className="flex-1">{t("emergency.back")}</Button>
                     <Button
                       variant="emergency"
                       className="flex-[2] gap-2"
                       disabled={!selectedType}
                       onClick={dispatchAmbulance}
                     >
-                      <AlertTriangle className="w-4 h-4" /> Dispatch Ambulance
+                      <AlertTriangle className="w-4 h-4" /> {t("emergency.dispatch")}
                     </Button>
                   </div>
                 </motion.div>

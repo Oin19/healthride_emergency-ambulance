@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { MapPin, Clock, Shield } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import { useTranslation } from "react-i18next";
 
 const stats = [
   { icon: Clock, label: "Avg Response", value: "< 8 min" },
@@ -13,7 +14,9 @@ interface HeroSectionProps {
   onRequestAmbulance?: () => void;
 }
 
-const HeroSection = ({ onRequestAmbulance }: HeroSectionProps) => (
+const HeroSection = ({ onRequestAmbulance }: HeroSectionProps) => {
+  const { t } = useTranslation();
+  return (
   <section className="relative min-h-screen flex items-center overflow-hidden">
     <div className="absolute inset-0">
       <img
@@ -38,24 +41,24 @@ const HeroSection = ({ onRequestAmbulance }: HeroSectionProps) => (
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emergency/15 text-emergency-foreground text-sm font-medium mb-6 border border-emergency/20">
             <span className="w-2 h-2 rounded-full bg-emergency animate-pulse" />
-            AI-Powered Emergency Response
+            {t("hero.badge")}
           </span>
 
           <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-primary-foreground leading-tight mb-6">
             <span aria-hidden="true">
-              Every Second <br />
-              <span className="text-gradient-emergency">Counts.</span>
+              {t("hero.title1")} <br />
+              <span className="text-gradient-emergency">{t("hero.title2")}</span>
             </span>
             <span className="sr-only">HealthRide — AI-Powered Emergency Ambulance Dispatch</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-primary-foreground/70 max-w-xl mb-8 font-body">
-            HealthRide dispatches the nearest ambulance using AI, tracks it live, and connects you to the right hospital — with insurance handled before you arrive.
+            {t("hero.subtitle")}
           </p>
 
           <div className="flex flex-wrap gap-4 mb-16">
             <Button variant="emergency" size="lg" className="text-base px-8" onClick={onRequestAmbulance}>
-              Request Ambulance Now
+              {t("hero.cta")}
             </Button>
             <Button
               variant="hero"
@@ -63,7 +66,7 @@ const HeroSection = ({ onRequestAmbulance }: HeroSectionProps) => (
               className="text-base px-8 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20"
               onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
             >
-              See How It Works
+              {t("hero.learn")}
             </Button>
           </div>
         </motion.div>
@@ -85,6 +88,7 @@ const HeroSection = ({ onRequestAmbulance }: HeroSectionProps) => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default HeroSection;
