@@ -88,6 +88,7 @@ const HeroSection = ({ onRequestAmbulance }: HeroSectionProps) => {
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default HeroSection;
