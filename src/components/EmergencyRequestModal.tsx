@@ -113,8 +113,14 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
           toast.error("Recording too short — please hold and speak.");
           return;
         }
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData.session) {
+          toast.error("Please sign in to use voice input.");
+          return;
+        }
         setIsTranscribing(true);
         try {
+
           const ext = blobType.includes("mp4") ? "mp4" : blobType.includes("wav") ? "wav" : "webm";
           const fd = new FormData();
           fd.append("file", blob, `recording.${ext}`);
