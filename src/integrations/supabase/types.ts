@@ -531,18 +531,6 @@ export type Database = {
         Returns: boolean
       }
       is_own_profile: { Args: { _profile_id: string }; Returns: boolean }
-      log_security_event: {
-        Args: {
-          _actor_email?: string
-          _details?: Json
-          _event_type: string
-          _ip_address?: string
-          _resource?: string
-          _severity?: string
-          _user_agent?: string
-        }
-        Returns: string
-      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
