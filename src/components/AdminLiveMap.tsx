@@ -54,10 +54,10 @@ const AdminLiveMap = () => {
   useEffect(() => {
     fetchLiveData();
 
-    const driverChannel = supabase
-      .channel("admin-drivers")
-      .on("postgres_changes", { event: "*", schema: "public", table: "driver_profiles" }, () => fetchLiveData())
-      .subscribe();
+    // Driver profiles (name, mobile, live GPS) are intentionally NOT published
+    // over Realtime — we poll them instead so PII is only ever delivered
+    // through the table's SELECT policies.
+    const driverPoll = setInterval(fetchLiveData, 15000);
 
     const requestChannel = supabase
       .channel("admin-requests")
@@ -65,10 +65,11 @@ const AdminLiveMap = () => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(driverChannel);
+      clearInterval(driverPoll);
       supabase.removeChannel(requestChannel);
     };
   }, []);
+
 
   const onlineDrivers = drivers.filter((d) => d.is_available && d.current_lat);
   const filteredDrivers = selectedCity === "all" ? onlineDrivers : onlineDrivers.filter((d) => d.city === selectedCity);
