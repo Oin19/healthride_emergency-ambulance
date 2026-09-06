@@ -530,9 +530,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_my_assigned_driver: { Args: { _driver_id: string }; Returns: boolean }
       is_own_profile: { Args: { _profile_id: string }; Returns: boolean }
-      my_driver_ids: { Args: never; Returns: string[] }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
