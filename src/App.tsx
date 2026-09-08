@@ -14,6 +14,8 @@ import BillingGuide from "./pages/BillingGuide.tsx";
 import DriverAuth from "./pages/DriverAuth.tsx";
 import DriverDashboard from "./pages/DriverDashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import CookieConsent from "@/components/CookieConsent";
+import RouteTracker from "@/components/RouteTracker";
 
 const queryClient = new QueryClient();
 
