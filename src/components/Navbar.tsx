@@ -19,6 +19,7 @@ const Navbar = () => {
   const location = useLocation();
   const isHome = location.pathname === "/";
   const { t } = useTranslation();
+  const hash = (anchor: string) => (isHome ? `#${anchor}` : `/#${anchor}`);
   const links = [
     { key: "features", label: t("nav.features"), anchor: "features" },
     { key: "how", label: t("nav.how"), anchor: "how-it-works" },
