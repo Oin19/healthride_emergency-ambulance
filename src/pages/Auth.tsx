@@ -351,6 +351,14 @@ const Auth = () => {
 
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4 mt-4 max-h-[60vh] overflow-y-auto pr-1">
+                {/* Spam trap — hidden from real users */}
+                <input
+                  {...honeypotProps}
+                  type="text"
+                  name="company_website"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                />
                 {/* Role Selection */}
                 <div className="space-y-2">
                   <Label>I am a</Label>
