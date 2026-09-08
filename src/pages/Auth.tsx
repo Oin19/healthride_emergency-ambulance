@@ -71,13 +71,14 @@ const Auth = () => {
     e.preventDefault();
 
     const spam = checkSpam({ honeypot, startedAt: formStartedAt, throttleKey: `signup_${selectedRole}` });
-    if (!spam.ok) {
+    if (spam.ok === false) {
+      const reason = spam.reason;
       void logSecurityEvent("form.spam_blocked", {
         severity: "warning",
         resource: "/auth",
-        details: { role: selectedRole, reason: spam.reason },
+        details: { role: selectedRole, reason },
       });
-      toast({ title: "Submission blocked", description: spam.reason, variant: "destructive" });
+      toast({ title: "Submission blocked", description: reason, variant: "destructive" });
       return;
     }
 
