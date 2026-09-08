@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Helmet } from "react-helmet-async";
 import { logSecurityEvent } from "@/lib/securityLog";
+import { checkSpam, honeypotProps } from "@/lib/spamGuard";
 
 type UserRole = "patient" | "driver" | "hospital";
 
