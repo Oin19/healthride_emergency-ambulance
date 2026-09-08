@@ -33,7 +33,10 @@ const Privacy = () => (
         <h2>5. Your Rights</h2>
         <p>You may request access to, correction of, or deletion of your personal data at any time by contacting us at <a href="mailto:banerjeeoindrila40@gmail.com" className="text-accent">banerjeeoindrila40@gmail.com</a>.</p>
 
-        <h2>6. Contact</h2>
+        <h2>6. Cookies & Analytics</h2>
+        <p>We use essential cookies and local storage to keep you signed in, remember your language choice, and protect our forms from automated abuse. These cannot be switched off without breaking the service. With your consent we also collect anonymous usage statistics (pages visited, approximate region) to improve dispatch speed. You can accept or decline optional cookies in the banner shown on your first visit, and change your mind any time by clearing your browser storage for this site. We do not use advertising or cross-site tracking cookies.</p>
+
+        <h2>7. Contact</h2>
         <p>For privacy-related inquiries, reach us at <a href="mailto:banerjeeoindrila40@gmail.com" className="text-accent">banerjeeoindrila40@gmail.com</a> or call +91 9330865494.</p>
       </div>
     </main>

@@ -19,6 +19,7 @@ const Navbar = () => {
   const location = useLocation();
   const isHome = location.pathname === "/";
   const { t } = useTranslation();
+  const hash = (anchor: string) => (isHome ? `#${anchor}` : `/#${anchor}`);
   const links = [
     { key: "features", label: t("nav.features"), anchor: "features" },
     { key: "how", label: t("nav.how"), anchor: "how-it-works" },
@@ -51,7 +52,7 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center gap-8">
             {links.map((l) => (
-              <a key={l.key} href={`#${l.anchor}`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <a key={l.key} href={hash(l.anchor)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {l.label}
               </a>
             ))}
@@ -85,7 +86,7 @@ const Navbar = () => {
             >
               <div className="p-4 flex flex-col gap-3">
                 {links.map((l) => (
-                  <a key={l.key} href={`#${l.anchor}`} className="text-sm text-muted-foreground py-2" onClick={() => setOpen(false)}>
+                  <a key={l.key} href={hash(l.anchor)} className="text-sm text-muted-foreground py-2" onClick={() => setOpen(false)}>
                     {l.label}
                   </a>
                 ))}

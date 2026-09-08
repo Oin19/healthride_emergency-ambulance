@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Helmet } from "react-helmet-async";
 import { logSecurityEvent } from "@/lib/securityLog";
+import { checkSpam, honeypotProps } from "@/lib/spamGuard";
 
 type UserRole = "patient" | "driver" | "hospital";
 
@@ -36,9 +37,12 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState<UserRole>("patient");
+  const [honeypot, setHoneypot] = useState("");
+  const [formStartedAt] = useState(() => Date.now());
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
+
 
   // Driver fields
   const [driverMobile, setDriverMobile] = useState("");
@@ -65,7 +69,21 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const spam = checkSpam({ honeypot, startedAt: formStartedAt, throttleKey: `signup_${selectedRole}` });
+    if (spam.ok === false) {
+      const reason = spam.reason;
+      void logSecurityEvent("form.spam_blocked", {
+        severity: "warning",
+        resource: "/auth",
+        details: { role: selectedRole, reason },
+      });
+      toast({ title: "Submission blocked", description: reason, variant: "destructive" });
+      return;
+    }
+
     setLoading(true);
+
 
     if (selectedRole === "patient") {
       const { error } = await supabase.auth.signUp({
@@ -333,6 +351,14 @@ const Auth = () => {
 
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4 mt-4 max-h-[60vh] overflow-y-auto pr-1">
+                {/* Spam trap — hidden from real users */}
+                <input
+                  {...honeypotProps}
+                  type="text"
+                  name="company_website"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                />
                 {/* Role Selection */}
                 <div className="space-y-2">
                   <Label>I am a</Label>
