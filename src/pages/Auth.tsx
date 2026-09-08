@@ -37,9 +37,12 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState<UserRole>("patient");
+  const [honeypot, setHoneypot] = useState("");
+  const [formStartedAt] = useState(() => Date.now());
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
+
 
   // Driver fields
   const [driverMobile, setDriverMobile] = useState("");
@@ -66,7 +69,20 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const spam = checkSpam({ honeypot, startedAt: formStartedAt, throttleKey: `signup_${selectedRole}` });
+    if (!spam.ok) {
+      void logSecurityEvent("form.spam_blocked", {
+        severity: "warning",
+        resource: "/auth",
+        details: { role: selectedRole, reason: spam.reason },
+      });
+      toast({ title: "Submission blocked", description: spam.reason, variant: "destructive" });
+      return;
+    }
+
     setLoading(true);
+
 
     if (selectedRole === "patient") {
       const { error } = await supabase.auth.signUp({
