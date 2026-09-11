@@ -288,6 +288,7 @@ const AdminLiveMap = () => {
                     </span>
                     <span className="absolute left-1/2 -translate-x-1/2 top-8 hidden group-hover:block whitespace-nowrap rounded bg-card text-card-foreground text-[11px] px-2 py-1 shadow-md border border-border">
                       {r.emergency_type} · {r.status}
+                      {r.eta_minutes ? ` · ETA ${r.eta_minutes} min` : ""}
                     </span>
                   </button>
                 );
