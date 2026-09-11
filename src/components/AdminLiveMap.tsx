@@ -473,6 +473,9 @@ const AdminLiveMap = () => {
                       {assigned && (
                         <p className="mt-1 text-[11px] text-muted-foreground">
                           Driver {assigned.full_name} · {assigned.mobile}
+                          {r.eta_minutes
+                            ? ` · arriving in ~${r.eta_minutes} min (by ${arrivalClock(r.eta_minutes)})`
+                            : ""}
                         </p>
                       )}
                     </div>
