@@ -153,6 +153,12 @@ const AdminLiveMap = () => {
   const assignDriver = async (request: ActiveRequest, driverId: string) => {
     setAssigningId(request.id);
     const driver = drivers.find((d) => d.id === driverId);
+    const eta =
+      driver?.current_lat != null && driver?.current_lng != null
+        ? etaFromKm(
+            distanceKm(request.patient_lat, request.patient_lng, driver.current_lat, driver.current_lng),
+          )
+        : null;
     const { error } = await supabase
       .from("ambulance_requests")
       .update({
@@ -160,6 +166,7 @@ const AdminLiveMap = () => {
         status: driverId ? "accepted" : "pending",
         driver_lat: driver?.current_lat ?? null,
         driver_lng: driver?.current_lng ?? null,
+        eta_minutes: driverId ? eta : null,
       })
       .eq("id", request.id);
     setAssigningId(null);
@@ -167,7 +174,11 @@ const AdminLiveMap = () => {
       toast.error("Could not assign driver: " + error.message);
       return;
     }
-    toast.success(driverId ? `Assigned to ${driver?.full_name ?? "driver"}` : "Driver unassigned");
+    toast.success(
+      driverId
+        ? `Assigned to ${driver?.full_name ?? "driver"}${eta ? ` · ETA ${eta} min (by ${arrivalClock(eta)})` : ""}`
+        : "Driver unassigned",
+    );
     fetchLiveData(false);
   };
 
