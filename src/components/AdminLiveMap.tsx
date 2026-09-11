@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, MapPin, Truck, AlertTriangle, RefreshCw, UserCheck } from "lucide-react";
+import { Loader2, MapPin, Truck, AlertTriangle, RefreshCw, UserCheck, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cityCoordinates } from "@/data/cityCoordinates";
 import { toast } from "sonner";
@@ -30,8 +30,21 @@ interface ActiveRequest {
   city: string;
   status: string;
   driver_id: string | null;
+  eta_minutes: number | null;
+  driver_lat: number | null;
+  driver_lng: number | null;
   created_at: string;
 }
+
+/** ETA in minutes for a trip of `km`, assuming ~30 km/h city driving. */
+const etaFromKm = (km: number) => Math.max(3, Math.round(km / 0.5));
+
+/** Clock time the ambulance is expected to arrive, e.g. "9:47 PM". */
+const arrivalClock = (minutes: number) =>
+  new Date(Date.now() + minutes * 60_000).toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+  });
 
 const REFRESH_MS = 5000;
 
@@ -140,6 +153,12 @@ const AdminLiveMap = () => {
   const assignDriver = async (request: ActiveRequest, driverId: string) => {
     setAssigningId(request.id);
     const driver = drivers.find((d) => d.id === driverId);
+    const eta =
+      driver?.current_lat != null && driver?.current_lng != null
+        ? etaFromKm(
+            distanceKm(request.patient_lat, request.patient_lng, driver.current_lat, driver.current_lng),
+          )
+        : null;
     const { error } = await supabase
       .from("ambulance_requests")
       .update({
@@ -147,6 +166,7 @@ const AdminLiveMap = () => {
         status: driverId ? "accepted" : "pending",
         driver_lat: driver?.current_lat ?? null,
         driver_lng: driver?.current_lng ?? null,
+        eta_minutes: driverId ? eta : null,
       })
       .eq("id", request.id);
     setAssigningId(null);
@@ -154,7 +174,11 @@ const AdminLiveMap = () => {
       toast.error("Could not assign driver: " + error.message);
       return;
     }
-    toast.success(driverId ? `Assigned to ${driver?.full_name ?? "driver"}` : "Driver unassigned");
+    toast.success(
+      driverId
+        ? `Assigned to ${driver?.full_name ?? "driver"}${eta ? ` · ETA ${eta} min (by ${arrivalClock(eta)})` : ""}`
+        : "Driver unassigned",
+    );
     fetchLiveData(false);
   };
 
@@ -264,6 +288,7 @@ const AdminLiveMap = () => {
                     </span>
                     <span className="absolute left-1/2 -translate-x-1/2 top-8 hidden group-hover:block whitespace-nowrap rounded bg-card text-card-foreground text-[11px] px-2 py-1 shadow-md border border-border">
                       {r.emergency_type} · {r.status}
+                      {r.eta_minutes ? ` · ETA ${r.eta_minutes} min` : ""}
                     </span>
                   </button>
                 );
@@ -406,16 +431,24 @@ const AdminLiveMap = () => {
                             {r.emergency_type} · {r.city}
                           </p>
                         </div>
-                        <Badge
-                          variant="outline"
-                          className={
-                            r.status === "pending"
-                              ? "bg-yellow-100 text-yellow-800 border-yellow-300"
-                              : "bg-accent/10 text-accent border-accent/30"
-                          }
-                        >
-                          {r.status}
-                        </Badge>
+                        <div className="flex flex-col items-end gap-1">
+                          <Badge
+                            variant="outline"
+                            className={
+                              r.status === "pending"
+                                ? "bg-yellow-100 text-yellow-800 border-yellow-300"
+                                : "bg-accent/10 text-accent border-accent/30"
+                            }
+                          >
+                            {r.status}
+                          </Badge>
+                          {r.eta_minutes ? (
+                            <span className="flex items-center gap-1 text-[11px] font-medium text-accent">
+                              <Clock className="w-3 h-3" />
+                              {r.eta_minutes} min
+                            </span>
+                          ) : null}
+                        </div>
                       </div>
 
                       <div className="mt-2 flex items-center gap-2">
@@ -430,8 +463,8 @@ const AdminLiveMap = () => {
                           <option value="">Unassigned</option>
                           {options.map(({ driver, km }) => (
                             <option key={driver.id} value={driver.id}>
-                              {driver.full_name} · {driver.vehicle_number} · {km.toFixed(1)} km
-                              {driver.is_available ? "" : " (busy)"}
+                              {driver.full_name} · {driver.vehicle_number} · {km.toFixed(1)} km · ~
+                              {etaFromKm(km)} min{driver.is_available ? "" : " (busy)"}
                             </option>
                           ))}
                         </select>
@@ -440,6 +473,9 @@ const AdminLiveMap = () => {
                       {assigned && (
                         <p className="mt-1 text-[11px] text-muted-foreground">
                           Driver {assigned.full_name} · {assigned.mobile}
+                          {r.eta_minutes
+                            ? ` · arriving in ~${r.eta_minutes} min (by ${arrivalClock(r.eta_minutes)})`
+                            : ""}
                         </p>
                       )}
                     </div>
