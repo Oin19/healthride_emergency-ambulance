@@ -72,7 +72,27 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
     current_lat: number | null; current_lng: number | null;
   } | null>(null);
   const [eta, setEta] = useState(0);
+  const [arrivalAt, setArrivalAt] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
   const [requestStatus, setRequestStatus] = useState("pending");
+
+  // Whenever a fresh ETA arrives, anchor it to a wall-clock arrival time.
+  const applyEta = (minutes: number) => {
+    setEta(minutes);
+    setArrivalAt(Date.now() + minutes * 60_000);
+  };
+
+  // Tick so the countdown stays honest while the family watches it.
+  useEffect(() => {
+    if (!arrivalAt) return;
+    const t = setInterval(() => setNow(Date.now()), 15_000);
+    return () => clearInterval(t);
+  }, [arrivalAt]);
+
+  const minutesLeft = arrivalAt ? Math.max(0, Math.ceil((arrivalAt - now) / 60_000)) : 0;
+  const arrivalClock = arrivalAt
+    ? new Date(arrivalAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
+    : null;
 
   // Reset on open
   useEffect(() => {
