@@ -30,8 +30,21 @@ interface ActiveRequest {
   city: string;
   status: string;
   driver_id: string | null;
+  eta_minutes: number | null;
+  driver_lat: number | null;
+  driver_lng: number | null;
   created_at: string;
 }
+
+/** ETA in minutes for a trip of `km`, assuming ~30 km/h city driving. */
+const etaFromKm = (km: number) => Math.max(3, Math.round(km / 0.5));
+
+/** Clock time the ambulance is expected to arrive, e.g. "9:47 PM". */
+const arrivalClock = (minutes: number) =>
+  new Date(Date.now() + minutes * 60_000).toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+  });
 
 const REFRESH_MS = 5000;
 
