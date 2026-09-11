@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { cityCoordinates } from "@/data/cityCoordinates";
 import LiveTrackingMap from "@/components/LiveTrackingMap";
+import CostEstimator from "@/components/CostEstimator";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -471,6 +472,10 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                       className="w-full h-20 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
                     />
                   </div>
+
+                  {coords && selectedType && (
+                    <CostEstimator coords={coords} emergencyType={selectedType} />
+                  )}
 
                   <div className="flex gap-3">
                     <Button variant="hero" onClick={() => setStep("location")} className="flex-1">{t("emergency.back")}</Button>
