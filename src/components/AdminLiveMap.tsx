@@ -463,8 +463,8 @@ const AdminLiveMap = () => {
                           <option value="">Unassigned</option>
                           {options.map(({ driver, km }) => (
                             <option key={driver.id} value={driver.id}>
-                              {driver.full_name} · {driver.vehicle_number} · {km.toFixed(1)} km
-                              {driver.is_available ? "" : " (busy)"}
+                              {driver.full_name} · {driver.vehicle_number} · {km.toFixed(1)} km · ~
+                              {etaFromKm(km)} min{driver.is_available ? "" : " (busy)"}
                             </option>
                           ))}
                         </select>
