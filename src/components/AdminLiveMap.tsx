@@ -431,16 +431,24 @@ const AdminLiveMap = () => {
                             {r.emergency_type} · {r.city}
                           </p>
                         </div>
-                        <Badge
-                          variant="outline"
-                          className={
-                            r.status === "pending"
-                              ? "bg-yellow-100 text-yellow-800 border-yellow-300"
-                              : "bg-accent/10 text-accent border-accent/30"
-                          }
-                        >
-                          {r.status}
-                        </Badge>
+                        <div className="flex flex-col items-end gap-1">
+                          <Badge
+                            variant="outline"
+                            className={
+                              r.status === "pending"
+                                ? "bg-yellow-100 text-yellow-800 border-yellow-300"
+                                : "bg-accent/10 text-accent border-accent/30"
+                            }
+                          >
+                            {r.status}
+                          </Badge>
+                          {r.eta_minutes ? (
+                            <span className="flex items-center gap-1 text-[11px] font-medium text-accent">
+                              <Clock className="w-3 h-3" />
+                              {r.eta_minutes} min
+                            </span>
+                          ) : null}
+                        </div>
                       </div>
 
                       <div className="mt-2 flex items-center gap-2">
