@@ -108,6 +108,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
       setRequestId(null);
       setDriverInfo(null);
       setEta(0);
+      setArrivalAt(null);
       setRequestStatus("pending");
     }
   }, [open]);
@@ -262,7 +263,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
       }, async (payload) => {
         const updated = payload.new as any;
         setRequestStatus(updated.status);
-        if (updated.eta_minutes) setEta(updated.eta_minutes);
+        if (updated.eta_minutes) applyEta(updated.eta_minutes);
 
         // Fetch driver info when driver accepts
         if (updated.driver_id && !driverInfo) {
@@ -296,7 +297,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
         .single();
       if (data) {
         setRequestStatus(data.status);
-        if (data.eta_minutes) setEta(data.eta_minutes);
+        if (data.eta_minutes) applyEta(data.eta_minutes);
         if (data.driver_lat && data.driver_lng) {
           setDriverInfo((prev) => prev ? { ...prev, current_lat: data.driver_lat, current_lng: data.driver_lng } : prev);
         }
@@ -548,9 +549,14 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                         <p className="text-sm font-medium opacity-90 mb-1">Estimated Arrival</p>
                         <div className="flex items-center justify-center gap-2">
                           <Clock className="w-6 h-6" />
-                          <span className="font-display text-5xl font-bold">{eta || "—"}</span>
+                          <span className="font-display text-5xl font-bold">{arrivalAt ? minutesLeft : eta || "—"}</span>
                           <span className="text-lg font-medium">min</span>
                         </div>
+                        {arrivalAt && requestStatus !== "arrived" && requestStatus !== "completed" && (
+                          <p className="text-sm font-medium opacity-90 mt-1">
+                            Arriving around {arrivalClock}
+                          </p>
+                        )}
                         <p className="text-sm opacity-80 mt-2">
                           {requestStatus === "accepted" ? "Driver is on the way" :
                            requestStatus === "arrived" ? "Driver has arrived!" :
