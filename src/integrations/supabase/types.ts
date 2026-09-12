@@ -75,6 +75,7 @@ export type Database = {
           patient_lng: number
           patient_name: string | null
           patient_phone: string | null
+          patient_profile_id: string | null
           patient_user_id: string | null
           status: string
           updated_at: string
@@ -94,6 +95,7 @@ export type Database = {
           patient_lng: number
           patient_name?: string | null
           patient_phone?: string | null
+          patient_profile_id?: string | null
           patient_user_id?: string | null
           status?: string
           updated_at?: string
@@ -113,6 +115,7 @@ export type Database = {
           patient_lng?: number
           patient_name?: string | null
           patient_phone?: string | null
+          patient_profile_id?: string | null
           patient_user_id?: string | null
           status?: string
           updated_at?: string
@@ -123,6 +126,13 @@ export type Database = {
             columns: ["driver_id"]
             isOneToOne: false
             referencedRelation: "driver_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ambulance_requests_patient_profile_id_fkey"
+            columns: ["patient_profile_id"]
+            isOneToOne: false
+            referencedRelation: "patient_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -380,6 +390,81 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      patient_profiles: {
+        Row: {
+          account_user_id: string
+          allergies: string | null
+          blood_group: string | null
+          conditions: string | null
+          created_at: string
+          critical_notes: string | null
+          date_of_birth: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          emergency_contact_relationship: string | null
+          full_name: string
+          gender: string | null
+          id: string
+          insurance_policy_number: string | null
+          insurance_provider: string | null
+          insurance_scheme: string | null
+          is_self: boolean
+          medical_history: string | null
+          medications: string | null
+          phone: string | null
+          relationship: string
+          updated_at: string
+        }
+        Insert: {
+          account_user_id: string
+          allergies?: string | null
+          blood_group?: string | null
+          conditions?: string | null
+          created_at?: string
+          critical_notes?: string | null
+          date_of_birth?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          emergency_contact_relationship?: string | null
+          full_name: string
+          gender?: string | null
+          id?: string
+          insurance_policy_number?: string | null
+          insurance_provider?: string | null
+          insurance_scheme?: string | null
+          is_self?: boolean
+          medical_history?: string | null
+          medications?: string | null
+          phone?: string | null
+          relationship?: string
+          updated_at?: string
+        }
+        Update: {
+          account_user_id?: string
+          allergies?: string | null
+          blood_group?: string | null
+          conditions?: string | null
+          created_at?: string
+          critical_notes?: string | null
+          date_of_birth?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          emergency_contact_relationship?: string | null
+          full_name?: string
+          gender?: string | null
+          id?: string
+          insurance_policy_number?: string | null
+          insurance_provider?: string | null
+          insurance_scheme?: string | null
+          is_self?: boolean
+          medical_history?: string | null
+          medications?: string | null
+          phone?: string | null
+          relationship?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
