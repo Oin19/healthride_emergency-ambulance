@@ -1,4 +1,4 @@
-# HealthRide 🚑
+# HealthRide
 
 ### AI-Enabled Smart Ambulance Dispatch Platform
 
@@ -6,13 +6,9 @@ HealthRide is a smart emergency healthcare platform designed to reduce ambulance
 
 The platform brings emergency ambulance dispatch, live tracking, patient information, hospital discovery, and healthcare coordination into a single web application.
 
-> **Project:** HealthRide  
-> **Team:** VisionWiz  
-> **Repository:** Oin19/healthride_emergency-ambulance
-
 ---
 
-## 🚨 Problem
+## Problem
 
 During medical emergencies, delays in ambulance dispatch, traffic congestion, limited visibility into ambulance location, and difficulty identifying suitable hospitals can critically affect response time.
 
@@ -20,7 +16,7 @@ HealthRide addresses these challenges through a centralized digital platform tha
 
 ---
 
-## 💡 Solution
+## Solution
 
 HealthRide provides a streamlined emergency workflow:
 
@@ -35,51 +31,51 @@ The platform also supports non-emergency ambulance transportation and hospital s
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🚑 Emergency Ambulance Dispatch
+### Emergency Ambulance Dispatch
 - One-tap emergency request workflow
 - Ambulance request management
 - Rapid dispatch from available ambulance resources
 - Emergency status tracking
 
-### 📍 Live Ambulance Tracking
+### Live Ambulance Tracking
 - Real-time ambulance location
 - Pickup and destination information
 - Driver details and contact options
 - Trip status visibility
 
-### 🏥 Hospital Discovery
+### Hospital Discovery
 - Search and browse hospitals
 - Hospital information and availability-oriented workflows
 - Support for selecting preferred hospitals
 - Insurance-aware hospital selection concept
 
-### 👤 Patient Profiles
+### Patient Profiles
 - Patient account management
 - Multiple patient/family profiles
 - Medical information and emergency notes
 - Information such as blood group, allergies, and other relevant medical details
 
-### 🤖 Emergency Triage
+### Emergency Triage
 A conversational emergency-assistance workflow can collect basic information about an incident and help classify the urgency before an ambulance request is processed.
 
 > The triage component is intended as an assistance layer and is not a replacement for professional medical diagnosis or emergency services.
 
-### 🚗 Traffic-Aware Routing
+### Traffic-Aware Routing
 The platform is designed around route optimization and real-time location information to help reduce avoidable delays during ambulance trips.
 
-### 🏨 Hospital Administration
+### Hospital Administration
 A hospital-side workflow supports management of incoming ambulance requests and coordination with emergency cases.
 
-### 📊 Healthcare Coordination
+### Healthcare Coordination
 HealthRide is designed to connect the three major participants in an emergency journey:
 
 **Patient → Ambulance → Hospital**
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Frontend
 - React
@@ -106,7 +102,7 @@ HealthRide is designed to connect the three major participants in an emergency j
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 High-level system flow:
 
@@ -136,7 +132,7 @@ High-level system flow:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 healthride_emergency-ambulance/
@@ -157,7 +153,7 @@ healthride_emergency-ambulance/
 
 ---
 
-## ⚙️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -198,7 +194,7 @@ The application will be available at the local development URL shown by Vite.
 
 ---
 
-## 🧪 Available Scripts
+## Available Scripts
 
 | Command | Description |
 |---|---|
@@ -212,7 +208,7 @@ The application will be available at the local development URL shown by Vite.
 
 ---
 
-## 🎯 Project Goals
+## Project Goals
 
 HealthRide aims to explore how software, location-aware systems, and intelligent assistance can improve emergency transportation workflows.
 
@@ -227,7 +223,7 @@ The long-term vision includes:
 
 ---
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 Potential future development areas include:
 
@@ -242,7 +238,7 @@ Potential future development areas include:
 
 ---
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 HealthRide is a software project and prototype intended to demonstrate emergency healthcare coordination workflows.
 
@@ -250,14 +246,6 @@ It is **not a substitute for emergency medical services, professional medical ad
 
 ---
 
-## 👥 Team
-
-**VisionWiz**
-
-HealthRide is developed as a technology project focused on improving emergency ambulance coordination through software and intelligent systems.
-
----
-
-## 📄 License
+## License
 
 This project is currently intended for educational, research, and demonstration purposes.
