@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/healthride_emergency-ambulance/",
+  base: process.env.GITHUB_ACTIONS ? "/healthride_emergency-ambulance/" : "/",
   server: {
     host: "::",
     port: 8080,
