@@ -146,7 +146,7 @@ const Family = () => {
             <Button variant="ghost" size="icon" onClick={() => navigate("/")} aria-label="Back to home">
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <a href="/" className="flex items-center gap-2 font-display text-xl font-bold text-foreground">
+            <a href={import.meta.env.BASE_URL} className="flex items-center gap-2 font-display text-xl font-bold text-foreground">
               <img src={healthrideLogo} alt="HealthRide" className="w-8 h-8" />
               HealthRide
             </a>
