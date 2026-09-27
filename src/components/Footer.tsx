@@ -5,7 +5,7 @@ const Footer = () => (
     <div className="container mx-auto px-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
         <div>
-        <a href="/" className="flex items-center gap-2 font-display text-lg font-bold text-foreground mb-3">
+        <a href={import.meta.env.BASE_URL} className="flex items-center gap-2 font-display text-lg font-bold text-foreground mb-3">
           <div className="w-7 h-7 rounded-lg bg-gradient-emergency flex items-center justify-center">
             <Heart className="w-3.5 h-3.5 text-emergency-foreground" />
           </div>
