@@ -157,42 +157,29 @@ healthride_emergency-ambulance/
 
 ### Prerequisites
 
-Make sure you have installed:
-
 - Node.js
 - npm
 
-### 1. Clone the repository
+### Installation
 
 ```bash
 git clone https://github.com/Oin19/healthride_emergency-ambulance.git
 cd healthride_emergency-ambulance
-```
-
-### 2. Install dependencies
-
-```bash
 npm install
 ```
 
-### 3. Configure environment variables
-
-Create a `.env` file in the project root and provide the Supabase configuration required by the application:
+Create a `.env` file in the project root:
 
 ```env
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 ```
 
-### 4. Start the development server
+Start the development server:
 
 ```bash
 npm run dev
 ```
-
-The application will be available at the local development URL shown by Vite.
-
----
 
 ## Available Scripts
 
