@@ -2,6 +2,8 @@
 
 ### AI-Enabled Smart Ambulance Dispatch Platform
 
+**Live Demo:** https://healthride-oin.lovable.app
+
 HealthRide is a smart emergency healthcare platform designed to reduce ambulance response time and improve coordination between patients, ambulance teams, and hospitals.
 
 The platform brings emergency ambulance dispatch, live tracking, patient information, hospital discovery, and healthcare coordination into a single web application.
