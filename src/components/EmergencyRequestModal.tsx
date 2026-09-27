@@ -14,6 +14,7 @@ import CostEstimator from "@/components/CostEstimator";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { fetchPatientProfiles, type PatientProfile } from "@/lib/patientProfiles";
 
 type Step = "location" | "details" | "dispatching" | "tracking";
 
@@ -60,6 +61,9 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [patientName, setPatientName] = useState("");
   const [patientPhone, setPatientPhone] = useState("");
+  const [patientProfiles, setPatientProfiles] = useState<PatientProfile[]>([]);
+  const [selectedPatientProfileId, setSelectedPatientProfileId] = useState<string | null>(null);
+  const [loadingPatientProfiles, setLoadingPatientProfiles] = useState(false);
   const [notes, setNotes] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
@@ -104,6 +108,9 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
       setSelectedType(null);
       setPatientName("");
       setPatientPhone("");
+      setPatientProfiles([]);
+      setSelectedPatientProfileId(null);
+      setLoadingPatientProfiles(false);
       setNotes("");
       setRequestId(null);
       setDriverInfo(null);
@@ -112,6 +119,31 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
       setRequestStatus("pending");
     }
   }, [open]);
+
+  // Load saved patient/family profiles when the emergency flow opens.
+  useEffect(() => {
+    if (!open || !user) return;
+    let cancelled = false;
+    setLoadingPatientProfiles(true);
+    fetchPatientProfiles(user.id)
+      .then((profiles) => {
+        if (!cancelled) setPatientProfiles(profiles);
+      })
+      .catch((error) => {
+        console.error("Could not load patient profiles:", error);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingPatientProfiles(false);
+      });
+    return () => { cancelled = true; };
+  }, [open, user]);
+
+  const selectPatientProfile = (profile: PatientProfile) => {
+    setSelectedPatientProfileId(profile.id);
+    setPatientName(profile.full_name || "");
+    setPatientPhone(profile.phone || "");
+    if (profile.critical_notes && !notes) setNotes(profile.critical_notes);
+  };
 
   // ============ Voice-to-form ============
   const startVoiceRecording = useCallback(async () => {
@@ -227,6 +259,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
         emergency_type: selectedType,
         patient_name: patientName || null,
         patient_phone: patientPhone || null,
+        patient_profile_id: selectedPatientProfileId,
         patient_lat: coords.lat,
         patient_lng: coords.lng,
         patient_address: locationText || null,
@@ -247,7 +280,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
     // Now wait for a driver to accept via realtime
     setStep("tracking");
     setRequestStatus("pending");
-  }, [coords, selectedType, user, patientName, patientPhone, locationText, notes]);
+  }, [coords, selectedType, user, patientName, patientPhone, selectedPatientProfileId, locationText, notes]);
 
   // Subscribe to request updates (driver acceptance, location updates)
   useEffect(() => {
@@ -477,13 +510,59 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                   </div>
 
                   <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">Who is the patient?</p>
+                        <p className="text-xs text-muted-foreground">Select a saved profile or enter details manually.</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { onClose(); navigate("/family"); }}
+                        className="text-xs font-medium text-accent hover:underline"
+                      >
+                        Manage profiles
+                      </button>
+                    </div>
+
+                    {loadingPatientProfiles ? (
+                      <div className="flex items-center gap-2 rounded-xl border border-border bg-card p-3 text-sm text-muted-foreground">
+                        <Loader2 className="w-4 h-4 animate-spin" /> Loading patient profiles...
+                      </div>
+                    ) : patientProfiles.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {patientProfiles.map((profile) => (
+                          <button
+                            key={profile.id}
+                            type="button"
+                            onClick={() => selectPatientProfile(profile)}
+                            className={`rounded-xl border p-3 text-left transition-all ${
+                              selectedPatientProfileId === profile.id
+                                ? "border-accent bg-accent/10 shadow-emergency"
+                                : "border-border bg-card hover:border-accent/40"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent font-semibold text-sm">
+                                {profile.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-sm font-medium text-foreground truncate">{profile.full_name}</p>
+                                <p className="text-xs text-muted-foreground capitalize">{profile.is_self ? "Me" : profile.relationship}</p>
+                              </div>
+                              {selectedPatientProfileId === profile.id && <CheckCircle2 className="w-4 h-4 text-accent ml-auto shrink-0" />}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
+
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input value={patientName} onChange={(e) => setPatientName(e.target.value)} placeholder={t("emergency.patient_name")} className="pl-10 bg-card border-border" />
+                      <Input value={patientName} onChange={(e) => { setPatientName(e.target.value); setSelectedPatientProfileId(null); }} placeholder={t("emergency.patient_name")} className="pl-10 bg-card border-border" />
                     </div>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input value={patientPhone} onChange={(e) => setPatientPhone(e.target.value)} placeholder={t("emergency.contact")} className="pl-10 bg-card border-border" />
+                      <Input value={patientPhone} onChange={(e) => { setPatientPhone(e.target.value); if (selectedPatientProfileId) setSelectedPatientProfileId(null); }} placeholder={t("emergency.contact")} className="pl-10 bg-card border-border" />
                     </div>
                     <textarea
                       value={notes}
