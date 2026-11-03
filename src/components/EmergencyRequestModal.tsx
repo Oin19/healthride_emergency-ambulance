@@ -14,7 +14,7 @@ import CostEstimator from "@/components/CostEstimator";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { fetchPatientProfiles, type PatientProfile } from "@/lib/patientProfiles";
+import { fetchPatientProfiles, criticalSummary, type PatientProfile } from "@/lib/patientProfiles";
 
 type Step = "location" | "details" | "dispatching" | "tracking";
 
@@ -138,11 +138,38 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
     return () => { cancelled = true; };
   }, [open, user]);
 
-  const selectPatientProfile = (profile: PatientProfile) => {
-    setSelectedPatientProfileId(profile.id);
-    setPatientName(profile.full_name || "");
-    setPatientPhone(profile.phone || "");
-    if (profile.critical_notes && !notes) setNotes(profile.critical_notes);
+  // Post-dispatch patient attachment
+  const [patientPanel, setPatientPanel] = useState<"pick" | "new" | "closed">("pick");
+  const [attachedPatient, setAttachedPatient] = useState<{ profile: PatientProfile | null; name: string; phone: string } | null>(null);
+  const [newPatientName, setNewPatientName] = useState("");
+  const [newPatientPhone, setNewPatientPhone] = useState("");
+  const [attaching, setAttaching] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setPatientPanel("pick"); setAttachedPatient(null);
+      setNewPatientName(""); setNewPatientPhone(""); setAttaching(false);
+    }
+  }, [open]);
+
+  const attachPatientToTrip = async (profile: PatientProfile | null, name: string | null, phone: string | null) => {
+    if (!requestId) return;
+    setAttaching(true);
+    const finalName = profile ? profile.full_name : name;
+    const finalPhone = profile ? profile.phone : phone;
+    const { error } = await supabase.rpc("attach_patient_to_request" as any, {
+      p_request_id: requestId,
+      p_patient_profile_id: profile?.id ?? null,
+      p_patient_name: finalName,
+      p_patient_phone: finalPhone,
+      p_critical_summary: profile ? (criticalSummary(profile) || null) : null,
+    });
+    setAttaching(false);
+    if (error) { toast.error("Could not attach patient. Please try again."); return; }
+    setSelectedPatientProfileId(profile?.id ?? null);
+    setAttachedPatient({ profile, name: finalName || "", phone: finalPhone || "" });
+    setPatientPanel("closed");
+    toast.success(`${finalName || "Patient"} attached to this trip`);
   };
 
   // ============ Voice-to-form ============
