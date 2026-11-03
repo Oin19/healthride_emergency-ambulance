@@ -259,7 +259,6 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
         emergency_type: selectedType,
         patient_name: patientName || null,
         patient_phone: patientPhone || null,
-        patient_profile_id: selectedPatientProfileId,
         patient_lat: coords.lat,
         patient_lng: coords.lng,
         patient_address: locationText || null,
@@ -277,10 +276,15 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
     }
 
     setRequestId(data.id);
+    // Patient selection happens AFTER dispatch — only seed what was typed here.
+    if (patientName || patientPhone) {
+      setAttachedPatient({ profile: null, name: patientName, phone: patientPhone });
+      setPatientPanel("closed");
+    }
     // Now wait for a driver to accept via realtime
     setStep("tracking");
     setRequestStatus("pending");
-  }, [coords, selectedType, user, patientName, patientPhone, selectedPatientProfileId, locationText, notes]);
+  }, [coords, selectedType, user, patientName, patientPhone, locationText, notes]);
 
   // Subscribe to request updates (driver acceptance, location updates)
   useEffect(() => {
@@ -510,51 +514,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                   </div>
 
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">Who is the patient?</p>
-                        <p className="text-xs text-muted-foreground">Select a saved profile or enter details manually.</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => { onClose(); navigate("/family"); }}
-                        className="text-xs font-medium text-accent hover:underline"
-                      >
-                        Manage profiles
-                      </button>
-                    </div>
-
-                    {loadingPatientProfiles ? (
-                      <div className="flex items-center gap-2 rounded-xl border border-border bg-card p-3 text-sm text-muted-foreground">
-                        <Loader2 className="w-4 h-4 animate-spin" /> Loading patient profiles...
-                      </div>
-                    ) : patientProfiles.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {patientProfiles.map((profile) => (
-                          <button
-                            key={profile.id}
-                            type="button"
-                            onClick={() => selectPatientProfile(profile)}
-                            className={`rounded-xl border p-3 text-left transition-all ${
-                              selectedPatientProfileId === profile.id
-                                ? "border-accent bg-accent/10 shadow-emergency"
-                                : "border-border bg-card hover:border-accent/40"
-                            }`}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent font-semibold text-sm">
-                                {profile.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
-                              </div>
-                              <div className="min-w-0">
-                                <p className="text-sm font-medium text-foreground truncate">{profile.full_name}</p>
-                                <p className="text-xs text-muted-foreground capitalize">{profile.is_self ? "Me" : profile.relationship}</p>
-                              </div>
-                              {selectedPatientProfileId === profile.id && <CheckCircle2 className="w-4 h-4 text-accent ml-auto shrink-0" />}
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    ) : null}
+                    <p className="text-xs text-muted-foreground">Name and contact are optional — you can attach a saved patient profile after the ambulance is dispatched.</p>
 
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
