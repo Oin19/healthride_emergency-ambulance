@@ -259,7 +259,6 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
         emergency_type: selectedType,
         patient_name: patientName || null,
         patient_phone: patientPhone || null,
-        patient_profile_id: selectedPatientProfileId,
         patient_lat: coords.lat,
         patient_lng: coords.lng,
         patient_address: locationText || null,
@@ -277,10 +276,15 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
     }
 
     setRequestId(data.id);
+    // Patient selection happens AFTER dispatch — only seed what was typed here.
+    if (patientName || patientPhone) {
+      setAttachedPatient({ profile: null, name: patientName, phone: patientPhone });
+      setPatientPanel("closed");
+    }
     // Now wait for a driver to accept via realtime
     setStep("tracking");
     setRequestStatus("pending");
-  }, [coords, selectedType, user, patientName, patientPhone, selectedPatientProfileId, locationText, notes]);
+  }, [coords, selectedType, user, patientName, patientPhone, locationText, notes]);
 
   // Subscribe to request updates (driver acceptance, location updates)
   useEffect(() => {
@@ -510,59 +514,15 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                   </div>
 
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">Who is the patient?</p>
-                        <p className="text-xs text-muted-foreground">Select a saved profile or enter details manually.</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => { onClose(); navigate("/family"); }}
-                        className="text-xs font-medium text-accent hover:underline"
-                      >
-                        Manage profiles
-                      </button>
-                    </div>
-
-                    {loadingPatientProfiles ? (
-                      <div className="flex items-center gap-2 rounded-xl border border-border bg-card p-3 text-sm text-muted-foreground">
-                        <Loader2 className="w-4 h-4 animate-spin" /> Loading patient profiles...
-                      </div>
-                    ) : patientProfiles.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {patientProfiles.map((profile) => (
-                          <button
-                            key={profile.id}
-                            type="button"
-                            onClick={() => selectPatientProfile(profile)}
-                            className={`rounded-xl border p-3 text-left transition-all ${
-                              selectedPatientProfileId === profile.id
-                                ? "border-accent bg-accent/10 shadow-emergency"
-                                : "border-border bg-card hover:border-accent/40"
-                            }`}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent font-semibold text-sm">
-                                {profile.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
-                              </div>
-                              <div className="min-w-0">
-                                <p className="text-sm font-medium text-foreground truncate">{profile.full_name}</p>
-                                <p className="text-xs text-muted-foreground capitalize">{profile.is_self ? "Me" : profile.relationship}</p>
-                              </div>
-                              {selectedPatientProfileId === profile.id && <CheckCircle2 className="w-4 h-4 text-accent ml-auto shrink-0" />}
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    ) : null}
+                    <p className="text-xs text-muted-foreground">Name and contact are optional — you can attach a saved patient profile after the ambulance is dispatched.</p>
 
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input value={patientName} onChange={(e) => { setPatientName(e.target.value); setSelectedPatientProfileId(null); }} placeholder={t("emergency.patient_name")} className="pl-10 bg-card border-border" />
+                      <Input value={patientName} onChange={(e) => setPatientName(e.target.value)} placeholder={t("emergency.patient_name")} className="pl-10 bg-card border-border" />
                     </div>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input value={patientPhone} onChange={(e) => { setPatientPhone(e.target.value); if (selectedPatientProfileId) setSelectedPatientProfileId(null); }} placeholder={t("emergency.contact")} className="pl-10 bg-card border-border" />
+                      <Input value={patientPhone} onChange={(e) => setPatientPhone(e.target.value)} placeholder={t("emergency.contact")} className="pl-10 bg-card border-border" />
                     </div>
                     <textarea
                       value={notes}
@@ -684,6 +644,91 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                       )}
                     </>
                   )}
+
+                  {/* Select Patient — attached AFTER dispatch so it never blocks the ambulance */}
+                  <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-display font-semibold text-foreground flex items-center gap-2">
+                          <User className="w-4 h-4 text-accent" /> {t("emergency.select_patient_title")}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{t("emergency.select_patient_sub")}</p>
+                      </div>
+                      <button type="button" onClick={() => { onClose(); navigate("/family"); }} className="text-xs font-medium text-accent hover:underline shrink-0">
+                        {t("emergency.manage_profiles")}
+                      </button>
+                    </div>
+
+                    {patientPanel === "closed" && attachedPatient ? (
+                      <div className="flex items-center gap-2 rounded-lg bg-success/10 border border-success/30 px-3 py-2">
+                        <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+                        <p className="text-sm text-foreground truncate">
+                          <span className="font-medium">{attachedPatient.name || t("emergency.no_patient_attached")}</span>
+                          {attachedPatient.profile && (
+                            <span className="text-muted-foreground"> · {attachedPatient.profile.is_self ? t("emergency.me_label") : attachedPatient.profile.relationship}</span>
+                          )}
+                        </p>
+                        {requestStatus !== "completed" && (
+                          <Button variant="ghost" size="sm" className="ml-auto shrink-0" onClick={() => setPatientPanel("pick")}>
+                            {t("emergency.change")}
+                          </Button>
+                        )}
+                      </div>
+                    ) : patientPanel === "closed" ? (
+                      <Button variant="outline" size="sm" onClick={() => setPatientPanel("pick")}>
+                        <User className="w-4 h-4" /> {t("emergency.attach_later")}
+                      </Button>
+                    ) : patientPanel === "new" ? (
+                      <div className="space-y-3">
+                        <Input value={newPatientName} onChange={(e) => setNewPatientName(e.target.value)} placeholder={t("emergency.patient_name")} className="bg-background border-border" />
+                        <Input value={newPatientPhone} onChange={(e) => setNewPatientPhone(e.target.value)} placeholder={t("emergency.contact")} className="bg-background border-border" />
+                        <div className="flex flex-wrap gap-2">
+                          <Button variant="emergency" size="sm" disabled={attaching || !newPatientName.trim()} onClick={() => attachPatientToTrip(null, newPatientName.trim(), newPatientPhone.trim() || null)}>
+                            {attaching ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />} {t("emergency.attach")}
+                          </Button>
+                          <Button variant="outline" size="sm" disabled={attaching} onClick={() => setPatientPanel("pick")}>{t("emergency.back")}</Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {loadingPatientProfiles ? (
+                          <div className="flex items-center gap-2 rounded-lg bg-background border border-border p-3 text-sm text-muted-foreground">
+                            <Loader2 className="w-4 h-4 animate-spin" /> {t("emergency.loading_profiles")}
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {patientProfiles.map((profile) => (
+                              <button
+                                key={profile.id}
+                                type="button"
+                                disabled={attaching}
+                                onClick={() => attachPatientToTrip(profile, null, null)}
+                                className={`rounded-xl border border-border bg-background p-3 text-left transition-all hover:border-accent/40 ${attaching ? "opacity-60" : ""}`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent font-semibold text-sm">
+                                    {profile.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                                  </div>
+                                  <div className="min-w-0">
+                                    <p className="text-sm font-medium text-foreground truncate">{profile.full_name}</p>
+                                    <p className="text-xs text-muted-foreground capitalize">{profile.is_self ? t("emergency.me_label") : profile.relationship}</p>
+                                  </div>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Button variant="outline" size="sm" disabled={attaching} onClick={() => setPatientPanel("new")}>
+                            <User className="w-4 h-4" /> {t("emergency.patient_not_listed")}
+                          </Button>
+                          <Button variant="ghost" size="sm" disabled={attaching} onClick={() => setPatientPanel("closed")}>
+                            {t("emergency.skip")}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
                   {/* Status & Safety */}
                   <div className="flex gap-3">

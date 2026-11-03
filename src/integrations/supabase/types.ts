@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.18"
   }
   public: {
     Tables: {
@@ -608,6 +608,41 @@ export type Database = {
       }
     }
     Functions: {
+      attach_patient_to_request: {
+        Args: {
+          p_critical_summary: string
+          p_patient_name: string
+          p_patient_phone: string
+          p_patient_profile_id: string
+          p_request_id: string
+        }
+        Returns: {
+          city: string
+          created_at: string
+          driver_id: string | null
+          driver_lat: number | null
+          driver_lng: number | null
+          emergency_type: string
+          eta_minutes: number | null
+          id: string
+          notes: string | null
+          patient_address: string | null
+          patient_lat: number
+          patient_lng: number
+          patient_name: string | null
+          patient_phone: string | null
+          patient_profile_id: string | null
+          patient_user_id: string | null
+          status: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "ambulance_requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
