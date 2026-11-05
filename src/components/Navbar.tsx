@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, UserCircle, ArrowLeft, Shield, Truck } from "lucide-react";
+import { Menu, X, UserCircle, ArrowLeft, Shield, Truck, Users } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import healthrideLogo from "@/assets/healthride-logo.png";
@@ -66,6 +66,11 @@ const Navbar = () => {
                 <Shield className="w-4 h-4" /> Admin
               </Button>
             )}
+            {user && (
+              <Button variant="outline" size="sm" onClick={() => navigate("/family")}>
+                <Users className="w-4 h-4" /> My Family
+              </Button>
+            )}
             <Button variant="hero" size="sm" onClick={() => navigate(user ? "/profile" : "/auth")}>
               <UserCircle className="w-4 h-4" /> {user ? "Profile" : t("nav.signin")}
             </Button>
@@ -98,6 +103,11 @@ const Navbar = () => {
                 {isAdmin && (
                   <Button variant="outline" size="sm" onClick={() => { setOpen(false); navigate("/admin"); }}>
                     <Shield className="w-4 h-4" /> Admin
+                  </Button>
+                )}
+                {user && (
+                  <Button variant="outline" size="sm" onClick={() => { setOpen(false); navigate("/family"); }}>
+                    <Users className="w-4 h-4" /> My Family
                   </Button>
                 )}
                 <Button variant="hero" size="sm" onClick={() => { setOpen(false); navigate(user ? "/profile" : "/auth"); }}>

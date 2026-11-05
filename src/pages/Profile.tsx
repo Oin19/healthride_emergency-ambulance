@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, User, Shield, Stethoscope, Phone, Loader2, LogOut, ArrowLeft, Plus, Trash2, Save } from "lucide-react";
+import { Heart, User, Shield, Stethoscope, Phone, Loader2, LogOut, ArrowLeft, Plus, Trash2, Save, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Profile {
@@ -199,7 +199,10 @@ const Profile = () => {
 
       <div className="container mx-auto max-w-3xl px-4 py-8">
         <h1 className="font-display text-3xl font-bold text-foreground mb-1">Your Health Profile</h1>
-        <p className="text-muted-foreground mb-8">Keep your information up to date for faster emergency response.</p>
+        <p className="text-muted-foreground mb-4">Keep your information up to date for faster emergency response.</p>
+        <Button variant="outline" size="sm" className="mb-8" onClick={() => navigate("/family")}>
+          <Users className="w-4 h-4" /> My Family — manage profiles for your mother, father, children & more
+        </Button>
 
         <Tabs defaultValue="personal" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
