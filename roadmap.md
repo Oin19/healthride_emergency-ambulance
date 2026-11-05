@@ -1,12 +1,10 @@
 # Roadmap
 
-## In progress
-- [ ] Connect patient profiles to emergency flow: "Select Patient" step AFTER dispatch (profiles list + "Patient not listed / New patient" minimal entry), attach to trip, skippable — never blocks dispatch.
-- [ ] Remove pre-dispatch patient picker from emergency details step; keep emergency fast.
-- [ ] Check/update patient UPDATE policy on ambulance_requests so patient can attach a profile after dispatch.
-- [ ] Add i18n keys for new emergency patient-selection UI (en + hi/bn/ta/te).
-
-## Pending (from previous session)
-- [ ] Add "My Family" link in Navbar/Profile navigation.
-- [ ] Typecheck (bunx tsgo --noEmit).
-- [ ] End-to-end browser verification: sign in, request ambulance, attach patient post-dispatch; confirm driver/tracking unaffected.
+## Done
+- [x] Patient profiles connected to emergency flow: "Select Patient" step AFTER dispatch (profiles list + "Patient not listed" minimal entry), attach to trip, skippable — dispatch never blocked.
+- [x] Pre-dispatch patient picker removed from emergency details step (name/contact remain optional free-text).
+- [x] `attach_patient_to_request` SECURITY DEFINER RPC created in live DB; no broad patient UPDATE policy needed.
+- [x] i18n keys for patient-selection UI added to en/hi/bn/ta/te.
+- [x] "My Family" links in Navbar (desktop + mobile) and Profile page.
+- [x] Typecheck (bunx tsgo --noEmit) passed.
+- [x] End-to-end browser verification: sign in, request ambulance, attach saved profile post-dispatch, and "patient not listed" minimal entry — both confirmed against the DB; test requests deleted.
