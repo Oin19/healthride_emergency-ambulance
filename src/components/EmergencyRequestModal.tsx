@@ -541,7 +541,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                   </div>
 
                   <div className="space-y-3">
-                    <p className="text-xs text-muted-foreground">Name and contact are optional — you can attach a saved patient profile after the ambulance is dispatched.</p>
+                    <p className="text-xs text-muted-foreground">{t("emergency.patient_optional_hint")}</p>
 
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
