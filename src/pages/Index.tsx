@@ -2,7 +2,6 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
-import TrackingMapSection from "@/components/TrackingMapSection";
 import HospitalFinderSection from "@/components/HospitalFinderSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import CTASection from "@/components/CTASection";
@@ -16,17 +15,16 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>HealthRide — AI-Powered Emergency Ambulance Dispatch</title>
-        <meta name="description" content="HealthRide dispatches the nearest ambulance using AI, provides live tracking, and connects patients to insurance-aware hospitals across 80+ Indian cities." />
+        <title>HealthRide | Ambulance requests and live tracking</title>
+        <meta name="description" content="Request an ambulance in India, share your location, and follow the driver on a live map. Includes a hospital directory filtered by insurance and specialty." />
         <link rel="canonical" href="https://healthride-oin.lovable.app/" />
-        <meta property="og:title" content="HealthRide — AI-Powered Emergency Ambulance Dispatch" />
-        <meta property="og:description" content="AI-driven ambulance dispatch with live GPS tracking and insurance pre-authorization across India." />
+        <meta property="og:title" content="HealthRide | Ambulance requests and live tracking" />
+        <meta property="og:description" content="Request an ambulance in India, share your location, and follow the driver on a live map. Includes a hospital directory filtered by insurance and specialty." />
         <meta property="og:url" content="https://healthride-oin.lovable.app/" />
       </Helmet>
       <Navbar />
       <HeroSection onRequestAmbulance={() => setEmergencyOpen(true)} />
       <FeaturesSection />
-      <TrackingMapSection />
       <HospitalFinderSection />
       <HowItWorksSection />
       <CTASection onRequestAmbulance={() => setEmergencyOpen(true)} />

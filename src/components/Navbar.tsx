@@ -23,7 +23,6 @@ const Navbar = () => {
   const links = [
     { key: "features", label: t("nav.features"), anchor: "features" },
     { key: "how", label: t("nav.how"), anchor: "how-it-works" },
-    { key: "safety", label: t("nav.safety"), anchor: "safety" },
     { key: "contact", label: t("nav.contact"), anchor: "contact" },
   ];
 

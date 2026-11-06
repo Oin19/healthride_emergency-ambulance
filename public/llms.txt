@@ -1,17 +1,16 @@
 # HealthRide
 
-> AI-powered emergency ambulance dispatch and non-emergency medical transport across 80+ Indian cities, with live GPS tracking and insurance pre-authorization (Ayushman Bharat, CGHS, ESI, Swasthya Sathi, private insurers).
+> Request an ambulance in India, share your location, and follow the driver on a live map. Includes a hospital directory filtered by insurance and specialty.
 
-HealthRide connects patients to the nearest ambulance using AI, tracks it live, and coordinates with insurance-aware hospitals so admission and billing are handled before arrival.
+HealthRide sends your browser location and emergency type to ambulance drivers registered in your city. Once a driver accepts, you see their details and live position. In a life-threatening emergency, call 112 or 108 first.
 
 ## Pages
 
-- [Home](/): Overview of AI dispatch, live tracking, hospital finder, and how HealthRide works.
-- [Ambulance Insurance & Medicare Coverage Guide](/billing-guide): How ambulance billing, insurance, and Medicare coverage work — and how AI pre-authorization simplifies emergency transport.
-- [Sign In or Register](/auth): Patient, driver, and hospital sign-up.
-- [Privacy Policy](/privacy): How patient, location, and medical data is collected, used, and protected.
-- [Terms of Service](/terms): Terms governing use of the HealthRide dispatch platform.
+- [Home](/): How requests, live tracking and the hospital directory work.
+- [Sign In or Register](/auth): Patient, driver and hospital sign-up.
+- [Privacy Policy](/privacy): How patient, location and medical data is collected, used and protected.
+- [Terms of Service](/terms): Terms governing use of HealthRide.
 
 ## Optional
 
-- Contact: banerjeeoindrila40@gmail.com, +91 9330865494 — Kolkata, West Bengal, India.
+- Contact: banerjeeoindrila40@gmail.com, +91 9330865494, Kolkata, West Bengal, India.

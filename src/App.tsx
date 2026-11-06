@@ -11,7 +11,6 @@ import Profile from "./pages/Profile.tsx";
 import Family from "./pages/Family.tsx";
 import Privacy from "./pages/Privacy.tsx";
 import Terms from "./pages/Terms.tsx";
-import BillingGuide from "./pages/BillingGuide.tsx";
 import DriverAuth from "./pages/DriverAuth.tsx";
 import DriverDashboard from "./pages/DriverDashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -37,7 +36,6 @@ const App = () => (
             <Route path="/family" element={<Family />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
-            <Route path="/billing-guide" element={<BillingGuide />} />
             <Route path="/driver-auth" element={<DriverAuth />} />
             <Route path="/driver" element={<DriverDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
