@@ -166,6 +166,9 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
     });
     setAttaching(false);
     if (error) { toast.error("Could not attach patient. Please try again."); return; }
+    window.__lovableEvents?.track?.("project.patient_selection_outcome", {
+      outcome: profile ? "saved_profile" : "new_patient",
+    });
     setSelectedPatientProfileId(profile?.id ?? null);
     setAttachedPatient({ profile, name: finalName || "", phone: finalPhone || "" });
     setPatientPanel("closed");
@@ -302,6 +305,7 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
       return;
     }
 
+    window.__lovableEvents?.track?.("project.ambulance_request_created");
     setRequestId(data.id);
     // Patient selection happens AFTER dispatch — only seed what was typed here.
     if (patientName || patientPhone) {
@@ -749,7 +753,10 @@ const EmergencyRequestModal = ({ open, onClose }: Props) => {
                           <Button variant="outline" size="sm" disabled={attaching} onClick={() => setPatientPanel("new")}>
                             <User className="w-4 h-4" /> {t("emergency.patient_not_listed")}
                           </Button>
-                          <Button variant="ghost" size="sm" disabled={attaching} onClick={() => setPatientPanel("closed")}>
+                          <Button variant="ghost" size="sm" disabled={attaching} onClick={() => {
+                            window.__lovableEvents?.track?.("project.patient_selection_outcome", { outcome: "skipped" });
+                            setPatientPanel("closed");
+                          }}>
                             {t("emergency.skip")}
                           </Button>
                         </div>

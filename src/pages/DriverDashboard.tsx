@@ -234,10 +234,11 @@ const DriverDashboard = () => {
 
   const completeRequest = async () => {
     if (!activeRequest || !profile) return;
-    await supabase
+    const { error } = await supabase
       .from("ambulance_requests")
       .update({ status: "completed" })
       .eq("id", activeRequest.id);
+    if (!error) window.__lovableEvents?.track?.("project.trip_completed");
     setActiveRequest(null);
     toast({ title: "Trip completed" });
   };

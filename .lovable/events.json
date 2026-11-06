@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "events": {
+    "project.ambulance_request_created": {
+      "event_schema_version": 1,
+      "description": "An ambulance request was successfully created.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false
+      }
+    },
+    "project.patient_selection_outcome": {
+      "event_schema_version": 1,
+      "description": "A patient was attached to the trip or the patient-selection step was skipped.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "outcome"
+        ],
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "saved_profile",
+              "new_patient",
+              "skipped"
+            ]
+          }
+        }
+      }
+    },
+    "project.trip_completed": {
+      "event_schema_version": 1,
+      "description": "A driver successfully marked an ambulance trip as completed.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false
+      }
+    }
+  }
+}
